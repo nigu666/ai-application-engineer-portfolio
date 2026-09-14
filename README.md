@@ -33,7 +33,7 @@
 
 ## Online Portfolio
 
-GitHub Pages 发布成功并完成公网验证后回填。
+https://nigu666.github.io/ai-application-engineer-portfolio/
 
 ## 本地运行
 
