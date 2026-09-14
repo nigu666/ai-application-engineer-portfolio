@@ -1,0 +1,7 @@
+review/
+.DS_Store
+Thumbs.db
+*.log
+__pycache__/
+.venv/
+node_modules/
