@@ -10,27 +10,7 @@
   <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.26.10/babel.min.js"></script>
-  <style>
-    :root{--blue:#245BEB;--ink:#14233B;--muted:#52627A;--soft:#F5F7FB;--line:#DFE5EF;--body:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;--mono:Consolas,"SFMono-Regular",monospace}
-    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:100px}body{margin:0;color:var(--ink);background:#fff;font:16px/1.7 var(--body);-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}img{display:block;width:100%;height:auto}h1,h2,h3,h4,p,figure{margin:0}button,a{font:inherit;-webkit-tap-highlight-color:transparent}button{color:inherit}button,a{transition:color 250ms ease,background 250ms ease,border-color 250ms ease,transform 250ms ease}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:5px}button{cursor:pointer}.wrap{width:min(1280px,calc(100% - 96px));margin:auto}.header{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:rgba(255,255,255,.97)}.navigation{display:flex;min-height:76px;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:12px;font-weight:700;white-space:nowrap}.brand-mark{display:grid;place-items:center;width:42px;height:42px;background:var(--blue);color:white;border-radius:10px;font:700 17px var(--mono)}.nav-links{display:flex;align-items:center;gap:24px;color:var(--muted)}.nav-links a{padding:8px 0}.nav-links a:hover{color:var(--blue)}.identity{padding:32px 0 28px;display:flex;justify-content:space-between;align-items:end;gap:32px}.identity .eyebrow,.label{color:var(--blue);font-weight:600}.identity h1{margin-top:7px;font-size:46px;font-weight:550;letter-spacing:-.045em;line-height:1.25}.identity .meta{text-align:right;color:var(--muted)}.catalog{display:grid;grid-template-columns:200px minmax(0,1fr);gap:44px;border-top:1px solid var(--line)}.index{padding-top:26px;align-self:start;position:sticky;top:100px}.index-heading{color:var(--muted);margin-bottom:12px}.index a{display:grid;grid-template-columns:34px 1fr;gap:9px;padding:15px 0;color:var(--muted);border-bottom:1px solid var(--line)}.index a:first-of-type{color:var(--blue)}.index a:hover{color:var(--blue);background:var(--soft)}.index .number{font-family:var(--mono);font-size:17px;font-weight:650}.index .item-name{font-weight:550;line-height:1.6}.cases{min-width:0}.featured{padding:26px 0 30px}.case-head{display:flex;justify-content:space-between;align-items:start;gap:20px}.case-head .category{color:var(--blue);font-family:var(--mono);font-size:16px}.case-head h2{font-size:31px;font-weight:650;line-height:1.35;letter-spacing:-.025em;margin-top:7px}.case-id{font:500 44px/1.1 var(--mono);color:var(--line)}.case-intro{margin:9px 0 24px;color:var(--muted)}.featured-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.88fr);gap:32px;align-items:start}.path{padding-bottom:18px}.path+ .path{border-top:1px solid var(--line);padding-top:18px}.path h3{font-size:19px;font-weight:650;line-height:1.4}.path p{color:var(--muted);margin-top:9px;line-height:1.75}.path-name{display:block;color:var(--blue);font-family:var(--mono);margin-bottom:5px}.responsibility{padding-top:18px;border-top:1px solid var(--line);margin-top:2px}.responsibility strong{font-size:17px;font-weight:650}.responsibility p{margin-top:5px;color:var(--muted)}.arrow-link{display:inline-flex;align-items:center;gap:16px;margin-top:19px;color:var(--blue);font-weight:650;min-height:44px;border-bottom:1px solid var(--blue)}.arrow-link:hover{background:var(--soft)}.run-image{padding:12px;background:var(--soft);border-radius:12px;animation:hero-in 380ms ease-out both}.run-image .evidence-trigger{display:block;width:100%}.run-image img{height:354px;object-fit:contain;object-position:top}.run-image figcaption{padding:11px 4px 2px;color:var(--muted);font-size:16px;line-height:1.6}.evidence-trigger{padding:0;border:0;background:transparent;cursor:zoom-in;max-width:100%}.evidence-trigger:hover{background:#EDF2FF}.evidence-trigger:active,.button:active,.filter:active{transform:translateY(1px) scale(.985)}.project-row{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:18px;border-top:1px solid var(--line);padding:24px 0;align-items:center}.project-row .number{font:500 23px var(--mono);color:var(--blue)}.project-row h2{font-size:22px;font-weight:600;line-height:1.4}.project-row p{margin-top:6px;color:var(--muted)}.project-row>a{display:grid;place-items:center;min-width:44px;min-height:44px;color:var(--blue);font-size:25px}.project-row>a:hover{background:var(--soft)}
-    .section{border-top:1px solid var(--line);margin-top:42px;padding:44px 0 6px}.section-head{display:grid;grid-template-columns:200px 1fr;gap:44px}.section-head h2{font-size:32px;font-weight:550;line-height:1.35;letter-spacing:-.03em}.section-head .lead{margin-top:12px;color:var(--muted);max-width:840px}.case-facts{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin:30px 0 32px}.case-facts h3,.scope-grid h3{font-size:21px;font-weight:600;line-height:1.4}.case-facts p,.scope-grid p{margin-top:10px;color:var(--muted)}.evidence-tools{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:30px;margin-bottom:24px}.filters{display:flex;gap:10px;flex-wrap:wrap}.filter{padding:8px 15px;min-height:44px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:16px}.filter:hover{border-color:var(--blue);color:var(--blue)}.filter[aria-pressed="true"]{color:white;background:var(--blue);border-color:var(--blue)}.evidence-count{color:var(--muted);white-space:nowrap}.evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px;animation:content-in 300ms ease-out both}.evidence-item{min-width:0}.evidence-item .evidence-trigger{display:block;width:100%;background:var(--soft);border-radius:10px;padding:12px}.evidence-item img{height:232px;object-fit:contain}.evidence-item h3{margin-top:13px;font-size:20px;font-weight:600;line-height:1.4}.evidence-item p{margin-top:6px;color:var(--muted)}.evidence-boundary{padding:18px 0 0;margin-top:14px;color:var(--muted)}
-    .mobile-section{border-top:1px solid var(--line);padding-top:32px;margin-top:34px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:44px}.mobile-section h3{font-size:24px;font-weight:600;line-height:1.4}.mobile-content{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:36px;align-items:start}.mobile-copy p{margin-top:12px;color:var(--muted)}.mobile-copy strong{display:block;font-size:18px;margin-top:18px}.mobile-visuals{display:flex;align-items:start;gap:12px}.mobile-visuals .evidence-trigger{width:50%;min-width:0}.mobile-visuals img{max-height:360px;object-fit:contain}.boundary{border-left:2px solid var(--line);padding-left:16px;margin-top:18px!important}.button{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:46px;padding:9px 16px;border:1px solid var(--line);border-radius:6px;color:var(--blue);background:white;font-weight:600}.button:hover{border-color:var(--blue);background:var(--soft)}.button.primary{border-color:var(--blue);background:var(--blue);color:#fff}.button.primary:hover{background:#1C48C5}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.scope-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:30px}.scope-list{padding-left:20px;margin:12px 0 0;color:var(--muted)}.scope-list li+li{margin-top:7px}.web-chain{display:grid;grid-template-columns:200px 1fr;gap:44px;margin-top:30px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.web-chain strong{font-size:18px;font-weight:600}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;color:var(--muted)}.flow b{color:var(--blue);font-weight:500}.twin-visuals{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:18px;margin-top:30px;align-items:start}.twin-main .evidence-trigger{display:block;width:100%;background:var(--soft);padding:14px;border-radius:10px}.twin-main img{height:355px;object-fit:contain}.twin-visuals figcaption{color:var(--muted);margin-top:9px}.twin-support{display:grid;gap:18px}.twin-support .evidence-trigger{display:block;width:100%;background:var(--soft);padding:10px;border-radius:10px}.twin-support img{height:149px;object-fit:contain}
-    .skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:30px}.skill-group{border-top:2px solid var(--line);padding-top:20px}.skill-group:first-child{border-top-color:var(--blue)}.skill-group h3{font-size:22px;font-weight:600;line-height:1.4}.skill-group ul{padding-left:20px;margin:14px 0 0;color:var(--muted)}.skill-group li+li{margin-top:8px}.skill-note{color:var(--muted);margin-top:24px}.contact{margin:48px 0 0;border-top:1px solid var(--line);padding:36px 0}.contact-layout{display:grid;grid-template-columns:200px 1fr;gap:44px}.contact h2{font-size:30px;font-weight:550;line-height:1.35}.contact-role{color:var(--muted);margin-top:8px}.contact-details{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:16px}.contact-details a{color:var(--blue);overflow-wrap:anywhere}.contact-details a:hover{text-decoration:underline;text-underline-offset:4px}.footer{border-top:1px solid var(--line);padding:22px 0 30px;display:flex;justify-content:space-between;gap:24px;color:var(--muted)}
-    .viewer{width:min(1160px,calc(100vw - 48px));max-height:calc(100dvh - 36px);padding:0;border:1px solid var(--line);border-radius:14px;color:var(--ink);background:#fff;overflow:auto;animation:viewer-in 300ms ease-out both}.viewer::backdrop{background:rgba(20,35,59,.82)}.viewer.is-closing{animation:viewer-out 300ms ease-in both}.viewer-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 22px;border-bottom:1px solid var(--line)}.viewer-head h2{font-size:21px;font-weight:650;line-height:1.4}.viewer-close{display:grid;place-items:center;flex:0 0 44px;min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:7px;background:white;font-size:27px;line-height:1}.viewer-close:hover{background:var(--soft);border-color:var(--blue)}.viewer-media{padding:16px;background:var(--soft);display:grid;place-items:center}.viewer-media img{width:100%;max-height:calc(100dvh - 254px);object-fit:contain;animation:content-in 300ms ease-out both}.viewer-caption{padding:14px 22px 0;color:var(--muted);line-height:1.55}.viewer-controls{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 22px 20px}.viewer-step{display:flex;align-items:center;gap:12px}.viewer-controls output{font:16px var(--mono);color:var(--muted)}.viewer-original{color:var(--blue);font-weight:600;min-height:44px;display:inline-flex;align-items:center}.viewer-original:hover{text-decoration:underline;text-underline-offset:4px}
-    .arrow-link span{display:inline-block;transition:transform 250ms ease}.arrow-link:hover span,.arrow-link:focus-visible span{transform:translateX(5px)}.arrow-link:active span{transform:translateX(3px) scale(.88)}
-    @keyframes hero-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes content-in{from{opacity:.25;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@keyframes viewer-in{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes viewer-out{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(8px) scale(.99)}}
-    @media(max-width:1050px){.wrap{width:calc(100% - 48px)}.nav-links{gap:18px}.catalog,.section-head,.mobile-section,.web-chain,.contact-layout{grid-template-columns:185px minmax(0,1fr);gap:28px}.featured-body{gap:20px}.identity h1{font-size:38px}.case-head h2{font-size:28px}.run-image img{height:340px}.evidence-item img{height:208px}.mobile-content{grid-template-columns:1fr;gap:24px}.mobile-visuals{max-width:300px}.scope-grid,.skills{gap:24px}.twin-main img{height:290px}.twin-support img{height:120px}}
-    @media(max-width:750px){html{scroll-padding-top:88px}.wrap{width:calc(100% - 36px)}.navigation{min-height:64px;gap:16px}.brand-mark{width:36px;height:36px}.brand{gap:9px}.nav-links{gap:16px}.nav-links .desktop-nav{display:none}.identity{padding:20px 0 19px;display:block}.identity h1{font-size:30px;margin-top:4px}.identity .eyebrow{font-size:16px}.identity .meta{text-align:left;margin-top:9px}.identity .meta br,.identity .meta span:last-child{display:none}.catalog{display:block}.index{position:static;padding-top:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-bottom:1px solid var(--line)}.index-heading{display:none}.index a{display:block;border-bottom:0;padding:14px 0}.index .number{font-size:16px}.index .item-name{display:block;font-size:16px;line-height:1.5;margin-top:4px}.featured{padding:20px 0 24px}.case-head h2{font-size:25px;margin-top:4px}.case-head .category{font-size:16px}.case-id{font-size:36px}.case-intro{margin:8px 0 16px}.featured-body{display:flex;flex-direction:column;gap:22px}.featured-body>div{display:contents}.featured-body .path{order:1}.featured-body .arrow-link{order:2;align-self:start;margin-top:0}.run-image{order:-1;width:100%;display:flex;align-items:center;gap:14px;padding:12px}.run-image .evidence-trigger{width:56%;flex:0 0 56%}.run-image img{height:200px;object-fit:contain;object-position:top}.run-image figcaption{flex:1;padding:0;font-size:16px}.path{padding-bottom:16px}.path+ .path{padding-top:16px}.responsibility{order:-2;border-top:0;padding-top:0;margin-top:0}.responsibility p{margin-top:5px}.project-row{grid-template-columns:28px 1fr auto;gap:12px;padding:22px 0}.project-row h2{font-size:20px}.project-row .number{font-size:21px}.section{margin-top:28px;padding-top:32px}.section-head,.mobile-section,.web-chain,.contact-layout{display:block}.section-head h2{font-size:28px;margin-top:8px}.case-facts{grid-template-columns:1fr;gap:24px;margin:24px 0}.case-facts h3,.scope-grid h3{font-size:20px}.evidence-tools{display:block;margin:24px 0 20px}.evidence-count{margin-top:10px;display:block}.filters{gap:8px}.filter{padding:8px 12px}.evidence-grid{grid-template-columns:1fr 1fr;gap:24px 14px}.evidence-item .evidence-trigger{padding:7px}.evidence-item img{height:156px}.evidence-item h3{font-size:18px}.evidence-item p{font-size:16px;line-height:1.65}.mobile-section{padding-top:28px;margin-top:30px}.mobile-content{margin-top:14px}.mobile-visuals{margin:0 auto;width:100%;max-width:330px}.mobile-visuals img{max-height:360px}.scope-grid,.skills{grid-template-columns:1fr;gap:24px}.scope-grid>article+article{border-top:1px solid var(--line);padding-top:22px}.web-chain{margin-top:24px}.web-chain .flow{margin-top:12px}.twin-visuals{grid-template-columns:1fr;margin-top:24px}.twin-main img{height:auto;max-height:340px}.twin-support{grid-template-columns:1fr 1fr;gap:14px}.twin-support img{height:132px}.contact{margin-top:34px;padding:28px 0}.contact h2{margin-top:8px;font-size:27px}.contact-details{display:grid;gap:10px}.footer{display:block;padding-bottom:24px}.footer span{display:block;margin-bottom:6px}.viewer{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:10px}.viewer-head{padding:12px 14px;gap:12px}.viewer-head h2{font-size:18px}.viewer-media{padding:10px}.viewer-media img{max-height:calc(100dvh - 280px)}.viewer-caption{padding:12px 14px 0;font-size:16px}.viewer-controls{padding:12px 14px 16px;flex-wrap:wrap;gap:8px 12px}.viewer-step{gap:8px}.viewer-step .button{padding:8px 11px}.viewer-controls output{font-size:16px}}
-    @media(max-width:390px){.evidence-grid{gap:20px 12px}.evidence-item img{height:142px}.nav-links{gap:13px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
-    @media(max-width:750px){.featured-body .arrow-link{order:-3;margin-bottom:0}.run-image img{height:176px}}
-    @media(max-width:480px){.evidence-grid{grid-template-columns:1fr;gap:26px}.evidence-item .evidence-trigger{padding:12px}.evidence-item img{height:228px}.evidence-item h3{font-size:20px}}
-    html{scroll-behavior:auto}.header{background:#fff}
-    .evidence-item .evidence-trigger{position:relative}.evidence-item .evidence-trigger::after{content:"放大查看 ↗";position:absolute;right:10px;bottom:10px;padding:5px 10px;background:#fff;color:var(--blue);border:1px solid var(--line);border-radius:5px;font-size:14px;line-height:1.5}
-    @media(max-height:550px){.viewer[open]{display:flex;flex-direction:column;overflow:hidden}.viewer-head,.viewer-caption,.viewer-controls{flex-shrink:0}.viewer-media{min-height:0;overflow:auto;display:block;flex:1 1 auto}.viewer-media img{max-height:none;width:100%;height:auto}}
-  .mail-hint{margin-top:12px;color:var(--muted);font-size:16px;line-height:1.7}
-  </style>
-  <link rel="stylesheet" href="assets/project.css?v=20261025">
+<link rel="stylesheet" href="assets/project.css?v=20261026">
 </head>
 <body>
   <div id="root"></div>
@@ -56,13 +36,13 @@
 
     function MediaButton({id,onOpen,className="",lazy=true}){
       const item=mediaById(id);
-      return <button type="button" className={"evidence-trigger "+className} data-evidence-id={id} aria-haspopup="dialog" aria-label={"放大查看"+item.title} onClick={event=>onOpen(id,event.currentTarget)}><img src={item.src} alt={item.alt} loading={lazy?"lazy":"eager"}/></button>;
+      return <button type="button" className={"evidence-trigger "+className} data-evidence-id={id} aria-haspopup="dialog" aria-label={"放大查看"+item.title} onClick={event=>onOpen(id,event.currentTarget)}><img src={item.src} alt={item.alt} loading={lazy?"lazy":"eager"}/><span className="image-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5M10.5 8v5m-2.5-2.5h5"/></svg></span></button>;
     }
 
-    function Lightbox({index,trigger,onClose,onChange}){
+    function Lightbox({items,index,trigger,onClose,onChange}){
       const dialogRef=React.useRef(null),closeRef=React.useRef(null),closeTimer=React.useRef(null);
       const [closing,setClosing]=React.useState(false);
-      const item=MEDIA[index];
+      const item=items[index];
       React.useEffect(()=>{
         const dialog=dialogRef.current,oldOverflow=document.body.style.overflow;
         document.body.style.overflow="hidden";
@@ -79,9 +59,9 @@
         if(closing)return;
         if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){onClose();return;}
         setClosing(true);
-        closeTimer.current=window.setTimeout(onClose,300);
+        closeTimer.current=window.setTimeout(onClose,180);
       }
-      function change(step){if(!closing)onChange((index+step+MEDIA.length)%MEDIA.length);}
+      function change(step){if(!closing&&items.length>1)onChange((index+step+items.length)%items.length);}
       function onKeyDown(event){
         if(event.key==="ArrowLeft"){event.preventDefault();change(-1);return;}
         if(event.key==="ArrowRight"){event.preventDefault();change(1);return;}
@@ -100,80 +80,112 @@
         <header className="viewer-head"><h2 id="lightbox-title">{item.title}</h2><button type="button" className="viewer-close" ref={closeRef} onClick={requestClose} aria-label="关闭图片查看器">×</button></header>
         <div className="viewer-media"><img key={item.id} src={item.src} alt={item.alt}/></div>
         <p className="viewer-caption" id="lightbox-caption">{item.caption}</p>
-        <div className="viewer-controls"><div className="viewer-step"><button type="button" className="button" onClick={()=>change(-1)} aria-label="查看上一张图片">← 上一张</button><button type="button" className="button" onClick={()=>change(1)} aria-label="查看下一张图片">下一张 →</button></div><output aria-live="polite" aria-label="当前图片编号">{index+1} / {MEDIA.length}</output><a className="viewer-original" href={item.src} target="_blank" rel="noopener noreferrer">查看原图 ↗</a></div>
+        <div className={"viewer-controls"+(items.length===1?" single":"")}>
+          {items.length>1&&<><div className="viewer-step"><button type="button" className="button" onClick={()=>change(-1)} aria-label="查看上一张图片">← 上一张</button><button type="button" className="button" onClick={()=>change(1)} aria-label="查看下一张图片">下一张 →</button></div><output aria-live="polite" aria-label="当前图片编号">{index+1} / {items.length}</output></>}
+          <a className="viewer-original" href={item.src} target="_blank" rel="noopener noreferrer">查看原图 ↗</a>
+        </div>
       </dialog>;
     }
 
     function App(){
       const [filter,setFilter]=React.useState("all"),[lightbox,setLightbox]=React.useState(null);
       const visibleMedia=filter==="all"?ENGINEERING_MEDIA:ENGINEERING_MEDIA.filter(item=>item.group===filter);
-      function openMedia(id,trigger){setLightbox({index:MEDIA.findIndex(item=>item.id===id),trigger});}
+      function openMedia(id,trigger){
+        const item=mediaById(id);
+        const items=ENGINEERING_MEDIA.some(media=>media.id===id)?visibleMedia:MEDIA.filter(media=>media.group===item.group);
+        setLightbox({items,index:items.findIndex(media=>media.id===id),trigger});
+      }
       return <>
         <div id="page-shell">
-          <header className="header"><nav className="wrap navigation" aria-label="主导航"><a className="brand" href="#profile"><span className="brand-mark">LYT</span><span>雷雨天</span></a><div className="nav-links"><a href="#catalog">作品</a><a className="desktop-nav" href="#evidence">技术证据</a><a className="desktop-nav" href="#skills">能力</a><a href="#contact">联系</a></div></nav></header>
+          <header className="header">
+            <nav className="wrap navigation" aria-label="主导航">
+              <a className="brand" href="#profile"><span className="brand-mark">LYT</span><span>雷雨天</span></a>
+              <div className="nav-links"><a href="#catalog">作品</a><a className="desktop-nav" href="#evidence">项目证据</a><a href="#skills">技术实践</a><a href="#contact">联系</a></div>
+            </nav>
+          </header>
           <main className="wrap">
-            <section className="identity" id="profile" aria-labelledby="role"><div><p className="eyebrow">2027 校招 / AI 应用开发实践</p><h1 id="role">AI 应用开发工程师</h1></div><p className="meta"><span>武汉轻工大学 · 软件工程</span><br/><span>AI 修图 · RAG · 业务 API</span></p></section>
+            <section className="identity" id="profile" aria-labelledby="role">
+              <div><p className="eyebrow">2027 届校招</p><h1 id="role">AI 应用开发工程师</h1></div>
+              <p className="meta">武汉轻工大学 · 软件工程</p>
+            </section>
             <div className="catalog" id="catalog">
-              <nav className="index" aria-label="技术案例目录">
-                <p className="index-heading">项目索引</p>
-                <a href="#picture-editor"><span className="number">01</span><span className="item-name">AI 修图<br/>智能体</span></a>
-                <a href="#assistant"><span className="number">02</span><span className="item-name">智慧水产<br/>AI 助手</span></a>
-                <a href="#web-detail"><span className="number">03</span><span className="item-name">增殖放流站<br/>Web 原型</span></a>
-                <a href="#twin-detail"><span className="number">04</span><span className="item-name">数字孪生<br/>养殖监控</span></a>
+              <nav className="project-nav" aria-label="项目目录">
+                <a href="#picture-editor">AI 修图工作台</a><a href="#evidence">智慧水产 AI 助手</a><a href="#web-detail">Web 交互原型</a><a href="#twin-detail">数据可视化</a>
               </nav>
-              <div className="cases">
-                <article className="featured picture-feature" id="picture-editor" aria-labelledby="picture-title">
-                  <header className="case-head"><div><p className="category">AI 辅助开发实践 · 已开源</p><h2 id="picture-title">AI 修图智能体</h2></div><span className="case-id" aria-hidden="true">01</span></header>
-                  <p className="case-intro">本机运行的中文 AI 修图工作台，结合画布编辑与可确认的 AI 计划。</p>
-                  <p className="picture-role"><strong>我的参与</strong> 需求取舍、模型方案选择、界面反馈与功能验收，通过 AI 协作推进实现。</p>
-                  <div className="picture-links"><a className="button primary" href="https://github.com/nigu666/ai-picture-editor/releases/latest" target="_blank" rel="noopener noreferrer" aria-describedby="picture-install-note">下载本机安装包 ↗</a><a className="button" href="https://github.com/nigu666/ai-picture-editor" target="_blank" rel="noopener noreferrer">查看源码 ↗</a><a className="picture-process-link" href="#picture-process">开发过程 <span aria-hidden="true">↓</span></a></div>
-                  <p className="picture-install-note" id="picture-install-note">Windows x64 · 需 Docker Desktop · 云端 AI 按需配置百炼密钥</p>
-                  <figure className="picture-preview"><MediaButton id="picture-workbench" onOpen={openMedia} lazy={false}/><figcaption><span>悬浮画布 · 本机运行画面</span><span>点击放大查看 ↗</span></figcaption></figure>
-                </article>
-                <article className="project-row" id="assistant"><span className="number">02</span><div><h2>智慧水产 AI 助手</h2><p>Dify Workflow · RAG 检索配置 · 已有业务 API 调用</p></div><a href="#evidence" aria-label="查看智慧水产 AI 助手技术证据">→</a></article>
-                <article className="project-row"><span className="number">03</span><div><h2>智慧增殖放流站 Web 原型</h2><p>业务字段与状态 · 交互实现 · 跨模块工单关联</p></div><a href="#web-detail" aria-label="查看智慧增殖放流站 Web 原型">→</a></article>
-                <article className="project-row"><span className="number">04</span><div><h2>数字孪生养殖监控</h2><p>数据可视化 · 页面布局 · 监控交互</p></div><a href="#twin-detail" aria-label="查看数字孪生养殖监控">→</a></article>
-              </div>
+              <article className="featured" id="picture-editor" aria-labelledby="picture-title">
+                <div className="picture-copy">
+                  <p className="label">个人项目 · 已开源</p>
+                  <h2 id="picture-title">AI 修图智能体</h2>
+                  <p className="case-intro"><span className="keep">自然语言规划修图，</span><span className="keep">画布编辑、预览与导出。</span></p>
+                  <p className="picture-role">我参与需求取舍、模型选择、界面反馈与功能验收，<span className="keep">通过 AI 协作推进实现。</span></p>
+                  <div className="actions picture-links">
+                    <a className="button primary" href="https://github.com/nigu666/ai-picture-editor" target="_blank" rel="noopener noreferrer">查看项目 <span aria-hidden="true">↗</span></a>
+                    <a className="button" href="https://github.com/nigu666/ai-picture-editor/releases/latest" target="_blank" rel="noopener noreferrer" aria-describedby="picture-install-note">下载体验 <span aria-hidden="true">↗</span></a>
+                  </div>
+                  <p className="picture-install-note" id="picture-install-note">Windows x64 · 需 Docker Desktop</p>
+                </div>
+                <figure className="picture-preview"><MediaButton id="picture-workbench" onOpen={openMedia} lazy={false}/></figure>
+              </article>
             </div>
 
-            <section className="section picture-process" id="picture-process" aria-labelledby="picture-process-title">
-              <header className="section-head"><p className="label">01 / AI 修图智能体</p><div><h2 id="picture-process-title">从编辑功能，到本机交付</h2><p className="lead">围绕画布、模型与交付推进迭代，用 AI 协作实现代码，以实际运行与验收结果持续修正。</p></div></header>
-              <ol className="build-path"><li><span>编辑基础</span><h3>先让一次编辑走通</h3><p>素材上传与会话管理，接上裁剪、旋转、调色、文字和图层操作，保留历史并导出图片。</p></li><li><span>模型与任务</span><h3>让计划和执行可确认</h3><p>接入百炼规划与图像能力，结合本地抠图、区域选择和背景修复，先看计划，再确认执行。</p></li><li><span>本机交付</span><h3>让别人也能安装使用</h3><p>编排数据库、队列与图片存储，提供中文安装入口、独立配置、模型校验和版本下载。</p></li></ol>
-              <div className="picture-proof"><p><strong>已完成的交付</strong><br/>v0.1.0 开源发布，提供 Windows x64 本机安装包、源码包与 SHA-256 校验表。</p><a className="arrow-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer">查看版本与验证范围 ↗</a></div>
-              <details className="project-notes"><summary>实现范围与当前边界</summary><div><p>注册登录、图片读写、导出与重启保留数据已完成本机验收。云端 AI 需要使用者自己的密钥、网络和模型权限，操作可能产生费用；当前没有公网修图服务。</p><p>项目通过 AI 辅助实现，我的参与重点是需求取舍、体验反馈与逐步验收。Python 与相关框架知识仍在持续学习。</p><p>学习参考编程导航 AI 修图智能体教程；本项目自行实现部分采用 MIT 许可，第三方框架、服务与模型保留各自授权。</p></div></details>
+            <section className="project-process" id="picture-process" aria-labelledby="picture-process-title">
+              <h2 id="picture-process-title">编辑、规划与交付</h2>
+              <ol className="build-path">
+                <li><h3>画布与图层</h3><p>素材上传、会话保存、裁剪调色与多图层编辑，支持历史回退和图片导出。</p></li>
+                <li><h3>规划与执行</h3><p>LangGraph 组织规划与校验，Pydantic 约束工具参数；确认计划后，由 Worker 处理任务并返回进度。</p></li>
+                <li><h3>本机交付</h3><p>连接接口、数据库、队列与图片存储，通过 Docker Compose 提供中文安装入口。</p></li>
+              </ol>
+              <div className="picture-proof"><a className="text-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0" target="_blank" rel="noopener noreferrer">版本说明 · v0.1.0 ↗</a></div>
+              <details className="project-notes"><summary>安装与使用说明</summary><div><p>注册登录、图片读写、导出与重启保留数据已完成本机验收。云端 AI 需自行配置百炼密钥、网络和模型权限，调用可能产生费用；当前提供本机使用版本。</p><p>学习参考编程导航 AI 修图智能体教程；本项目自行实现部分采用 MIT 许可，第三方框架、服务与模型保留各自授权。</p></div></details>
             </section>
 
             <section className="section" id="evidence" aria-labelledby="evidence-title">
-              <header className="section-head"><p className="label">02 / 智慧水产 AI 助手</p><div><h2 id="evidence-title">真实配置与运行记录</h2><p className="lead">我参与资料整理与 RAG 配置、意图分类、参数提取、设备 ID 映射、已有业务接口调用及异常分支。</p></div></header>
-              <div className="case-facts"><article><h3>业务问题</h3><p>养殖场景既需要领域知识解释，也需要查询设备状态和理解水质数据。知识检索与业务数据读取分别进入对应工作流，避免把两类问题交给同一条回答路径。</p></article><article><h3>项目价值</h3><p>让知识问答有来源、设备查询有数据依据，并通过移动端原型验证统一 AI 入口与消息交互。</p></article></div>
+              <header className="section-head"><p className="label">实习实践</p><h2 id="evidence-title">智慧水产 AI 助手</h2><p className="lead">通过 Dify 工作流，连接养殖知识问答、设备查询与已有业务接口。</p></header>
+              <div className="case-facts">
+                <article><h3>我的工作</h3><p>整理养殖资料，配置 RAG 检索、提示词与工作流；提取查询参数，映射设备 ID，处理接口返回与异常分支。</p></article>
+                <article><h3>业务流程</h3><p>知识问题进入检索回答，设备问题进入工具调用；匹配到多个设备时，先追问编号或池体，再继续查询。</p></article>
+              </div>
               <div className="evidence-tools"><div className="filters" role="group" aria-label="筛选技术证据">{FILTERS.map(item=><button className="filter" type="button" key={item.id} aria-pressed={filter===item.id} onClick={()=>setFilter(item.id)}>{item.label}</button>)}</div><span className="evidence-count" aria-live="polite">{visibleMedia.length} 项证据</span></div>
               <div className="evidence-grid" key={filter}>{visibleMedia.map(item=><article className="evidence-item" key={item.id}><MediaButton id={item.id} onOpen={openMedia}/><h3>{item.title}</h3><p>{item.caption}</p></article>)}</div>
-              <p className="evidence-boundary">配置与运行截图用于说明实际流程和异常边界，不代表商业规模或性能指标。</p>
-              <section className="mobile-section" aria-labelledby="mobile-title"><h3 id="mobile-title">移动端业务入口</h3><div className="mobile-content"><div className="mobile-copy"><p>将 AI 助手融入水质监测、知识库与设备管理的移动端业务场景。</p><strong>我负责</strong><p>移动端页面和交互原型搭建、AI 对话界面与消息反馈，配合现有 Vue2 项目进行页面迁移和适配。</p><p className="boundary">当前线上原型在服务不可用时会展示网络异常提示；移动端异常画面不作为成功调用真实服务的证据。</p><div className="actions"><a className="button" href="../zhihui-shuichan-jiaohu-yuanxing/智慧水产设备管理助手/" target="_blank" rel="noopener noreferrer">打开移动端原型 ↗</a></div></div><div className="mobile-visuals"><MediaButton id="mobile-home" onOpen={openMedia}/><MediaButton id="mobile-chat" onOpen={openMedia}/></div></div></section>
+              <section className="mobile-section" aria-labelledby="mobile-title">
+                <div className="mobile-copy"><h3 id="mobile-title">移动端 AI 入口</h3><p>完成 AI 入口、对话面板、消息状态与接口异常反馈，参与现有 Vue2 页面的迁移适配和接口联调。</p><p>移动端为交互原型，在线服务不可用时会显示异常提示。</p><div className="actions"><a className="button" href="../zhihui-shuichan-jiaohu-yuanxing/智慧水产设备管理助手/" target="_blank" rel="noopener noreferrer">打开移动端原型 ↗</a></div></div>
+                <div className="mobile-visuals"><MediaButton id="mobile-home" onOpen={openMedia}/><MediaButton id="mobile-chat" onOpen={openMedia}/></div>
+              </section>
             </section>
 
             <section className="section" id="web-detail" aria-labelledby="web-title">
-              <header className="section-head"><p className="label">03 / Web 业务原型</p><div><h2 id="web-title">智慧增殖放流站 Web 原型</h2><p className="lead">将设备、物料、生产繁育与能耗需求转换为可操作页面，用原型验证复杂业务衔接。</p></div></header>
-              <div className="scope-grid"><article><h3>业务问题</h3><p>设备运维、物料和生产任务分布在不同页面，状态、字段与跨模块操作需要共同梳理。</p></article><article><h3>我负责</h3><ul className="scope-list"><li>理解已有业务流程和页面关系</li><li>Web 原型的迁移、修改和持续迭代</li><li>筛选表格、详情、表单与状态操作</li><li>验证跨模块页面衔接和异常工单关联</li></ul></article><article><h3>项目价值</h3><p>通过可点击的交互原型，把业务需求变成可讨论的页面和操作流程，支持需求评审与后续实现沟通。</p></article></div>
-              <div className="web-chain"><strong>跨模块异常处理</strong><p className="flow"><span>巡检异常</span><b aria-hidden="true">→</b><span>报修</span><b aria-hidden="true">→</b><span>维修工单</span></p></div>
-              <div className="actions"><a className="button primary" href="../zhihui-shuichan-jiaohu-yuanxing/智慧增殖站综合看板/" target="_blank" rel="noopener noreferrer">打开 Web 原型 ↗</a><a className="button" href="https://github.com/nigu666/zhihui-shuichan-jiaohu-yuanxing" target="_blank" rel="noopener noreferrer">查看原型仓库 ↗</a></div>
+              <header className="section-head"><p className="label">业务与交互</p><h2 id="web-title">智慧增殖放流站 Web 原型</h2><p className="lead">围绕设备、生产与报修业务，将需求整理为可操作的页面和流程。</p></header>
+              <div className="scope-grid">
+                <article><h3>负责内容</h3><ul className="scope-list"><li>参与需求沟通，梳理业务字段与页面关系</li><li>综合看板及设备、生产模块的交互原型</li><li>筛选、分页、抽屉、表单与页面状态联动</li></ul></article>
+                <article><h3>联动问题处理</h3><p>针对维修工单与经验库记录不一致的问题，统一业务 ID，补充状态判断和提交校验，让维修记录、经验提交与审核结果能够对应。</p></article>
+              </div>
+              <div className="web-chain"><strong>异常处理流程</strong><p className="flow"><span>巡检异常</span><b aria-hidden="true">→</b><span>报修</span><b aria-hidden="true">→</b><span>维修工单</span></p></div>
+              <div className="actions"><a className="button primary" href="../zhihui-shuichan-jiaohu-yuanxing/智慧增殖站综合看板/" target="_blank" rel="noopener noreferrer">打开 Web 原型 ↗</a><a className="button" href="https://github.com/nigu666/zhihui-shuichan-jiaohu-yuanxing" target="_blank" rel="noopener noreferrer">原型仓库 ↗</a></div>
             </section>
 
             <section className="section" id="twin-detail" aria-labelledby="twin-title">
-              <header className="section-head"><p className="label">04 / 页面与数据可视化</p><div><h2 id="twin-title">数字孪生养殖监控</h2><p className="lead">以数据驾驶舱和监控界面组织水质、鱼情、设备状态与告警，展示页面和交互原型实践。</p></div></header>
-              <div className="scope-grid"><article><h3>业务问题</h3><p>多类监控信息和不同视频场景需要清晰的信息层级与操作入口。</p></article><article><h3>我负责</h3><ul className="scope-list"><li>数据驾驶舱布局和信息层级</li><li>水质趋势、设备状态与告警交互</li><li>图表、Tooltip 与图例展示调整</li><li>视频墙、切换、全屏和轮巡原型</li></ul></article><article><h3>项目价值</h3><p>用原型验证不同监控场景的界面方案，并根据展示需求和反馈持续调整页面与操作。</p></article></div>
-              <div className="twin-visuals"><figure className="twin-main"><MediaButton id="dashboard" onOpen={openMedia}/><figcaption>水质、鱼情、设备与告警的信息组织</figcaption></figure><div className="twin-support"><figure><MediaButton id="twin-scene" onOpen={openMedia}/><figcaption>数字孪生场景页面</figcaption></figure><figure><MediaButton id="video" onOpen={openMedia}/><figcaption>监控场景界面</figcaption></figure></div></div>
-              <p className="evidence-boundary">这里展示页面与可视化原型，不表述为本人开发了生产后端、数字孪生引擎或鱼情识别模型。</p>
-              <div className="actions"><a className="button primary" href="../zhihui-shuichan-jiaohu-yuanxing/渔立方数据驾驶舱/" target="_blank" rel="noopener noreferrer">打开数据驾驶舱 ↗</a><a className="button" href="../zhihui-shuichan-jiaohu-yuanxing/渔立方数字孪生养殖系统/" target="_blank" rel="noopener noreferrer">打开监控原型 ↗</a><a className="button" href="https://github.com/nigu666/zhihui-shuichan-jiaohu-yuanxing" target="_blank" rel="noopener noreferrer">查看原型仓库 ↗</a></div>
+              <header className="section-head"><p className="label">数据可视化</p><h2 id="twin-title">养殖监控与数字孪生原型</h2><p className="lead">负责界面布局、图表交互、视频墙与场景切换，组织水质、设备、告警和监控信息。</p></header>
+              <div className="twin-visuals"><figure className="twin-main"><MediaButton id="dashboard" onOpen={openMedia}/></figure><div className="twin-support"><MediaButton id="twin-scene" onOpen={openMedia}/><MediaButton id="video" onOpen={openMedia}/></div></div>
+              <div className="actions"><a className="button primary" href="../zhihui-shuichan-jiaohu-yuanxing/渔立方数据驾驶舱/" target="_blank" rel="noopener noreferrer">打开数据驾驶舱 ↗</a><a className="button" href="../zhihui-shuichan-jiaohu-yuanxing/渔立方数字孪生养殖系统/" target="_blank" rel="noopener noreferrer">打开监控原型 ↗</a></div>
             </section>
 
-            <section className="section" id="skills" aria-labelledby="skills-title"><header className="section-head"><p className="label">能力与当前边界</p><div><h2 id="skills-title">以项目实践为依据</h2></div></header><div className="skills"><article className="skill-group"><h3>已实践</h3><ul><li>Dify、RAG、Prompt 与 Workflow</li><li>Tool Calling、HTTP API 与 JSON</li><li>参数提取、结构化输出与异常兜底</li><li>JavaScript、HTML、CSS 与 Web 原型</li><li>SVG 可视化与页面交互</li></ul></article><article className="skill-group"><h3>基础</h3><ul><li>Python、Git 与 HTTP 基础</li><li>数据结构、算法与复杂度</li><li>Embedding 与 Agent 基础</li><li>LLM、Transformer 与 Attention</li><li>Token 与上下文窗口</li></ul></article><article className="skill-group"><h3>学习中 / 了解</h3><ul><li>FastAPI：AI 辅助项目实践，持续学习</li><li>LangGraph、Docker：在项目中接触</li><li>vLLM：学习中</li><li>Fine-tuning / LoRA：了解</li><li>模型 Serving 与量化：了解</li><li>GPU 与分布式训练：了解</li></ul></article></div><p className="skill-note">这些方向用于说明学习范围，不作为已完成训练、部署或生产系统开发的项目证明。</p></section>
+            <section className="section expertise" id="skills" aria-labelledby="skills-title">
+              <header className="section-head"><h2 id="skills-title">技术与实践</h2></header>
+              <div className="skills">
+                <article className="skill-group"><h3>Python 与后端</h3><p>FastAPI 接口与 Pydantic 校验；<span className="keep">SQLAlchemy / Alembic</span> 数据管理，<span className="keep">PostgreSQL 存储。</span></p></article>
+                <article className="skill-group"><h3>Agent 与 RAG</h3><p>Dify 知识检索与业务工作流；LangGraph <span className="keep">规划、工具调用</span>，<span className="keep">结构化输出与人工确认。</span></p></article>
+                <article className="skill-group"><h3>前端与工程</h3><p>React、TypeScript 与 Konva 画布；JavaScript、HTML/CSS、SVG 交互原型，以及 Git 与 Docker Compose。</p></article>
+              </div>
+            </section>
 
-            <section className="contact" id="contact" aria-labelledby="contact-title"><div className="contact-layout"><p className="label">联系与更多作品</p><div><h2 id="contact-title">雷雨天</h2><p className="contact-role">AI 应用工程师 · 2027 届校招</p><div className="contact-details"><a href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB">3077602965@qq.com</a><span>武汉轻工大学 · 软件工程</span></div><div className="actions"><a className="button primary" aria-describedby="email-help" title="打开默认邮件应用，写信给 3077602965@qq.com" href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB">发送邮件</a><a className="button" href="https://github.com/nigu666" target="_blank" rel="noopener noreferrer">GitHub 主页 ↗</a><a className="button" href="../zhihui-shuichan-jiaohu-yuanxing/">AI 项目经理作品集 →</a></div><p className="mail-hint" id="email-help">点击后打开设备默认邮件应用，收件人为 3077602965@qq.com。</p></div></div></section>
-            <footer className="footer"><span>LYT / 雷雨天 · AI 应用工程师</span><span>武汉轻工大学 · 软件工程 · 2027 届</span></footer>
+            <section className="contact" id="contact" aria-labelledby="contact-title">
+              <h2 id="contact-title">联系我</h2>
+              <div className="actions"><a className="button primary" title="打开默认邮件应用" aria-label="通过默认邮件应用联系雷雨天" href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB">3077602965@qq.com</a><a className="button" href="https://github.com/nigu666" target="_blank" rel="noopener noreferrer">GitHub 主页 ↗</a><a className="text-link" href="../zhihui-shuichan-jiaohu-yuanxing/">更多交互作品 ↗</a></div>
+            </section>
+            <footer className="footer"><a href="#profile">返回顶部 ↑</a></footer>
           </main>
         </div>
-        {lightbox&&<Lightbox index={lightbox.index} trigger={lightbox.trigger} onClose={()=>setLightbox(null)} onChange={index=>setLightbox(current=>({...current,index}))}/>}
+        {lightbox&&<Lightbox items={lightbox.items} index={lightbox.index} trigger={lightbox.trigger} onClose={()=>setLightbox(null)} onChange={index=>setLightbox(current=>({...current,index}))}/>}
       </>;
     }
     ReactDOM.createRoot(document.getElementById("root")).render(<App/>);

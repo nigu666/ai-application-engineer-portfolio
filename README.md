@@ -13,7 +13,9 @@
 | 智慧增殖放流站 Web 原型 | 业务字段、状态操作、页面迁移与跨模块异常工单衔接 | [原型作品集](https://nigu666.github.io/zhihui-shuichan-jiaohu-yuanxing/) |
 | 数字孪生养殖监控 | 数据驾驶舱布局、图表、视频墙与场景切换等交互原型 | [页面与职责](https://nigu666.github.io/ai-application-engineer-portfolio/#twin-detail) |
 
-首页采用白底蓝色的技术案例索引，提供修图项目运行画面、个人参与说明、开发过程与版本下载。工程证据支持筛选，图片支持放大、方向键切换、Escape 关闭和焦点归还；页面尊重系统“减少动态效果”设置。
+首页采用白底蓝色的项目展示布局：横向目录、桌面图文并排、小屏顺序阅读。统一中文无衬线字体、正文行高和内容宽度，提供运行画面、个人参与、开发过程与版本下载。工程证据支持筛选，图片只在当前项目或筛选结果内切换，支持放大、方向键切换、Escape 关闭和焦点归还；单图项目不显示翻页按钮。页面尊重系统“减少动态效果”设置。
+
+底部“技术与实践”按 Python 与后端、Agent 与 RAG、前端与工程三组说明项目所用技术，移除泛化的学习名词和重复提示，不额外推断个人熟练程度。
 
 ## 角色与证据范围
 
@@ -35,7 +37,7 @@ python -m http.server 8877 --bind 127.0.0.1
 
 打开 <http://127.0.0.1:8877/ai-application-engineer-portfolio/>。
 
-保留现有 React 18.3.1 UMD、ReactDOM 18.3.1 与 Babel Standalone 7.26.10 的 CDN 方式，首次加载需要网络；无需 npm 安装或构建。基础样式位于 `index.html`，修图案例增量样式位于 `assets/project.css`。
+保留现有 React 18.3.1 UMD、ReactDOM 18.3.1 与 Babel Standalone 7.26.10 的 CDN 方式，首次加载需要网络；无需 npm 安装或构建。页面样式统一位于 `assets/project.css`，避免内联样式与增量覆盖互相冲突。
 
 原型使用相邻仓库的相对路径，在共同父目录预览及同域 GitHub Pages 部署下可访问。单独将本仓库作为服务根时，需另行提供相邻原型仓库。
 
