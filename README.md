@@ -13,9 +13,13 @@
 | 智慧增殖放流站 Web 原型 | 业务字段、状态操作、页面迁移与跨模块异常工单衔接 | [原型作品集](https://nigu666.github.io/zhihui-shuichan-jiaohu-yuanxing/) |
 | 数字孪生养殖监控 | 数据驾驶舱布局、图表、视频墙与场景切换等交互原型 | [页面与职责](https://nigu666.github.io/ai-application-engineer-portfolio/#twin-detail) |
 
-首页采用白底蓝色的项目展示布局：横向目录、桌面图文并排、小屏顺序阅读。统一中文无衬线字体、正文行高和内容宽度，提供运行画面、个人参与、开发过程与版本下载。工程证据支持筛选，图片只在当前项目或筛选结果内切换，支持放大、方向键切换、Escape 关闭和焦点归还；单图项目不显示翻页按钮。页面尊重系统“减少动态效果”设置。
+首页采用用户选定的“项目放映厅”布局：大幅真实作品画面、贴近画面的简介与入口，以及四个项目缩略入口。切换项目会同步更新画面、介绍与对应案例；支持键盘左右键、Home / End 选择项目。小屏按顺序阅读，项目入口改为两列。
 
-底部“技术与实践”按 Python 与后端、Agent 与 RAG、前端与工程三组说明项目所用技术，移除泛化的学习名词和重复提示，不额外推断个人熟练程度。
+统一中文无衬线字体、正文行高和 1.75px 扁平 SVG 图标，提供个人参与、开发过程与版本下载。工程证据支持筛选，图片只在当前项目或筛选结果内切换，支持放大、方向键切换、Escape 关闭和焦点归还；单图项目不显示翻页按钮。选中项目写入地址参数，刷新后保留项目选择，既有案例链接仍可定位。
+
+按钮按下、项目选择与作品切入提供即时反馈。GSAP ScrollTrigger 负责舞台退远与案例的一次性出场，不锁定页面滚动；页面尊重系统“减少动态效果”设置。
+
+底部“技术与实践”以分行排版说明 Python 与后端、Agent 与 RAG、前端与工程，保留学习状态，移除泛化的学习名词、进度标签和重复提示，不额外推断个人熟练程度。
 
 ## 角色与证据范围
 
@@ -37,13 +41,13 @@ python -m http.server 8877 --bind 127.0.0.1
 
 打开 <http://127.0.0.1:8877/ai-application-engineer-portfolio/>。
 
-保留现有 React 18.3.1 UMD、ReactDOM 18.3.1 与 Babel Standalone 7.26.10 的 CDN 方式，首次加载需要网络；无需 npm 安装或构建。页面样式统一位于 `assets/project.css`，避免内联样式与增量覆盖互相冲突。
+保留现有 React 18.3.1 UMD、ReactDOM 18.3.1 与 Babel Standalone 7.26.10 的 CDN 方式，首次加载需要网络；无需 npm 安装或构建。页面样式位于 `assets/project.css`，组件与项目数据位于 `assets/portfolio.jsx`。固定版本 GSAP 3.15.0 及 ScrollTrigger 位于 `assets/vendor/gsap/`，来源与许可链接见同目录 `NOTICE.md`。
 
 原型使用相邻仓库的相对路径，在共同父目录预览及同域 GitHub Pages 部署下可访问。单独将本仓库作为服务根时，需另行提供相邻原型仓库。
 
 ## 素材与来源
 
-原有 15 份工程、移动端与数字孪生截图保持原文件不变。新增 `assets/ai-picture-editor/workbench.png` 为修图项目实际运行截图，画布采用自制蓝调海报素材，不包含个人照片或密钥。
+原有工程、移动端、数字孪生与修图截图保持原文件不变。`assets/ai-picture-editor/workbench.png` 为修图项目实际运行截图，画布采用自制蓝调海报素材，不包含个人照片或密钥。新增 `assets/web-prototype/overview.png` 来自已公开的智慧增殖站综合看板原型，原型源文件未修改。
 
 修图项目学习与功能设计参考[编程导航 AI 修图智能体](https://github.com/yuyuanweb/ai-picture-editor)，自行实现部分及第三方许可见[修图项目仓库](https://github.com/nigu666/ai-picture-editor)。智慧水产职责同时参考[原型作品集既有说明](https://github.com/nigu666/zhihui-shuichan-jiaohu-yuanxing)。
 

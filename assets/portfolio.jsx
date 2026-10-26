@@ -1,0 +1,273 @@
+
+    const MEDIA = [
+      {id:"workflow",group:"workflow",title:"Dify Workflow",src:"assets/01_Dify_Workflow_脱敏.png",alt:"智慧水产 AI 助手的 Dify 完整工作流，接口地址已脱敏",caption:"意图分类后进入不同业务分支；知识检索与设备工具调用各自展开。"},
+      {id:"rag",group:"rag",title:"知识库与检索配置",src:"assets/02_Dify_RAG检索配置_脱敏.png",alt:"Dify 知识库的高质量索引、Embedding、混合检索与 Rerank 配置",caption:"领域资料经过分段与索引，通过混合检索和 Rerank 选择相关知识片段。"},
+      {id:"api",group:"api",title:"设备状态查询",src:"assets/03_业务API_设备状态查询_脱敏.png",alt:"设备 H_P3_PU1 状态查询的实际 Dify 运行记录与回答",caption:"提取设备参数、映射设备 ID、调用已有业务接口，解析返回数据后组织回答。"},
+      {id:"not-found",group:"api",title:"设备不存在的分支",src:"assets/03_API_NOT_FOUND_真实截图.png",alt:"查询不存在的 ABC 设备时，Dify 工作流进入 NOT_FOUND 分支",caption:"设备检索为空时进入 NOT_FOUND 分支，明确反馈未找到对应设备。"},
+      {id:"water",group:"api",title:"业务数据与水质分析",src:"assets/03_水质分析_脱敏.png",alt:"读取水质业务数据后的分析回答，包含液位、pH 和缺失温度数据的提示",caption:"读取传感器返回数据后分析，并保留数据缺失时无法评估的提示。"},
+      {id:"qa",group:"rag",title:"知识问答与引用",src:"assets/02_RAG_知识问答_真实截图.png",alt:"溶解氧知识问答的运行截图，回答保留领域知识库引用",caption:"根据检索上下文解释领域知识，并保留知识来源引用。"},
+      {id:"mobile-home",group:"mobile",title:"移动端 AI 入口",src:"assets/mobile-ai-assistant/05_移动端AI落地全景.png",alt:"智慧水产移动端业务首页与 AI 助手入口",caption:"AI 入口融入水质监测、知识库和设备管理的移动端业务环境。"},
+      {id:"mobile-chat",group:"mobile",title:"移动端对话界面",src:"assets/mobile-ai-assistant/02_AI对话页面.png",alt:"智慧水产移动端 AI 助手对话页面、消息输入和发送操作",caption:"移动端对话界面与消息交互；该画面不作为成功调用真实服务的证据。"},
+      {id:"dashboard",group:"twin",title:"养殖监控数据驾驶舱",src:"assets/05_渔立方_Dashboard_真实项目.png",alt:"渔立方数字孪生养殖监控 Dashboard，展示水质、鱼情、设备状态与告警",caption:"水质、鱼情、设备与告警的页面信息层级和数据可视化原型。"},
+      {id:"twin-scene",group:"twin",title:"数字孪生场景页面",src:"assets/05_渔立方_数字孪生场景_真实项目.png",alt:"渔立方养殖场数字孪生场景页面，部分业务信息已遮盖",caption:"数字孪生场景的页面与交互原型展示。"},
+      {id:"video",group:"twin",title:"监控场景与视频界面",src:"assets/05_渔立方_监控画面_真实项目.png",alt:"渔立方养殖设备监控场景画面",caption:"监控场景界面素材，用于视频墙、全屏和轮巡等交互原型展示。"}
+      ,{id:"picture-workbench",group:"picture",title:"AI 修图智能体",src:"assets/ai-picture-editor/workbench.png",alt:"AI 修图智能体本机运行画面，蓝调海报位于画布中，周围是编辑工具、图层与 AI 指令面板",caption:"本机运行中的悬浮画布、图层、选区工具与导出入口。"}
+    ];
+    const FILTERS=[{id:"all",label:"全部证据"},{id:"workflow",label:"工作流"},{id:"rag",label:"知识检索"},{id:"api",label:"业务 API"}];
+    const ENGINEERING_MEDIA=MEDIA.slice(0,6);
+    const mediaById=id=>MEDIA.find(item=>item.id===id);
+
+    function MediaButton({id,onOpen,className="",lazy=true}){
+      const item=mediaById(id);
+      return <button type="button" className={"evidence-trigger "+className} data-evidence-id={id} aria-haspopup="dialog" aria-label={"放大查看"+item.title} onClick={event=>onOpen(id,event.currentTarget)}><img src={item.src} alt={item.alt} loading={lazy?"lazy":"eager"}/><span className="image-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5M10.5 8v5m-2.5-2.5h5"/></svg></span></button>;
+    }
+
+    function Lightbox({items,index,trigger,onClose,onChange}){
+      const dialogRef=React.useRef(null),closeRef=React.useRef(null),closeTimer=React.useRef(null);
+      const [closing,setClosing]=React.useState(false);
+      const item=items[index];
+      React.useEffect(()=>{
+        const dialog=dialogRef.current,oldOverflow=document.body.style.overflow;
+        document.body.style.overflow="hidden";
+        if(!dialog.open)dialog.showModal();
+        closeRef.current.focus({preventScroll:true});
+        return()=>{
+          window.clearTimeout(closeTimer.current);
+          if(dialog.open)dialog.close();
+          document.body.style.overflow=oldOverflow;
+          if(trigger&&trigger.isConnected)trigger.focus({preventScroll:true});
+        };
+      },[trigger]);
+      function requestClose(){
+        if(closing)return;
+        if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){onClose();return;}
+        setClosing(true);
+        closeTimer.current=window.setTimeout(onClose,180);
+      }
+      function change(step){if(!closing&&items.length>1)onChange((index+step+items.length)%items.length);}
+      function onKeyDown(event){
+        if(event.key==="ArrowLeft"){event.preventDefault();change(-1);return;}
+        if(event.key==="ArrowRight"){event.preventDefault();change(1);return;}
+        if(event.key!=="Tab")return;
+        const focusable=Array.from(dialogRef.current.querySelectorAll("button:not([disabled]),a[href]")).filter(node=>node.getClientRects().length>0);
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+      }
+      function onBackdropClick(event){
+        if(event.target!==event.currentTarget)return;
+        const rect=event.currentTarget.getBoundingClientRect();
+        if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)requestClose();
+      }
+      return <dialog id="lightbox-dialog" ref={dialogRef} className={"viewer"+(closing?" is-closing":"")} aria-modal="true" aria-labelledby="lightbox-title" aria-describedby="lightbox-caption" onCancel={event=>{event.preventDefault();requestClose();}} onClose={onClose} onKeyDown={onKeyDown} onClick={onBackdropClick}>
+        <header className="viewer-head"><h2 id="lightbox-title">{item.title}</h2><button type="button" className="viewer-close" ref={closeRef} onClick={requestClose} aria-label="关闭图片查看器">×</button></header>
+        <div className="viewer-media"><img key={item.id} src={item.src} alt={item.alt}/></div>
+        <p className="viewer-caption" id="lightbox-caption">{item.caption}</p>
+        <div className={"viewer-controls"+(items.length===1?" single":"")}>
+          {items.length>1&&<><div className="viewer-step"><button type="button" className="button" onClick={()=>change(-1)} aria-label="查看上一张图片">← 上一张</button><button type="button" className="button" onClick={()=>change(1)} aria-label="查看下一张图片">下一张 →</button></div><output aria-live="polite" aria-label="当前图片编号">{index+1} / {items.length}</output></>}
+          <a className="viewer-original" href={item.src} target="_blank" rel="noopener noreferrer">查看原图 ↗</a>
+        </div>
+      </dialog>;
+    }
+
+
+    MEDIA.push({id:"web-overview",group:"web",title:"智慧增殖站综合看板",src:"assets/web-prototype/overview.png",alt:"智慧增殖站 Web 交互原型中的综合看板与业务模块",caption:"已有 Web 原型的综合看板，展示页面布局、筛选与业务模块入口。"});
+
+    const PROJECTS = [
+      {id:"picture",section:"picture-editor",name:"AI 修图智能体",kind:"个人项目 · AI 协作开发",description:"自然语言规划修图，画布编辑、预览与导出。",technical:"FastAPI 提供接口，Redis 与 ARQ Worker 处理异步任务。",media:"picture-workbench",icon:"image",url:"https://github.com/nigu666/ai-picture-editor",linkLabel:"项目源码"},
+      {id:"dify",section:"evidence",name:"智慧水产 AI 助手",kind:"实习实践 · Dify / RAG",description:"知识问答、设备查询，接入已有业务 API。",technical:"Dify 组织检索与工作流，按问题类型调用知识库或业务接口。",media:"workflow",icon:"workflow",url:"../zhihui-shuichan-jiaohu-yuanxing/智慧水产设备管理助手/",linkLabel:"移动端原型"},
+      {id:"web",section:"web-detail",name:"Web 交互原型",kind:"实习实践 · 业务与交互",description:"设备、生产与报修业务的页面和流程。",technical:"梳理业务字段、页面状态与跨模块交互，参与页面迁移适配。",media:"web-overview",icon:"layout",url:"../zhihui-shuichan-jiaohu-yuanxing/智慧增殖站综合看板/",linkLabel:"打开 Web 原型"},
+      {id:"twin",section:"twin-detail",name:"数据可视化",kind:"实习实践 · 监控与数字孪生原型",description:"养殖监控、图表交互与数字孪生原型。",technical:"组织水质、设备、告警和监控信息，呈现图表与场景交互。",media:"dashboard",icon:"chart",url:"../zhihui-shuichan-jiaohu-yuanxing/渔立方数据驾驶舱/",linkLabel:"打开数据驾驶舱"}
+    ];
+
+    function Icon({name,className=""}){
+      const shapes={
+        code:<path d="m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18"/>,
+        arrow:<path d="M6 18 18 6M6 6h12v12"/>,
+        down:<path d="M12 4v16m-6-6 6 6 6-6"/>,
+        right:<path d="M4 12h16m-6-6 6 6-6 6"/>,
+        up:<path d="M12 20V4m-6 6 6-6 6 6"/>,
+        mail:<><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></>,
+        image:<><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5"/><path d="m4 17 5-5 4 4 3-3 5 5"/></>,
+        workflow:<><rect x="2" y="9" width="6" height="6" rx="2"/><rect x="16" y="2" width="6" height="6" rx="2"/><rect x="16" y="16" width="6" height="6" rx="2"/><path d="M8 12h4V5h4M12 12v7h4"/></>,
+        layout:<><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M9 9v12"/></>,
+        chart:<path d="M4 3v17h17M9 15v-4M14 15V7M19 15v-6"/>,
+        zoom:<><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></>
+      };
+      return <svg className={"icon "+className} viewBox="0 0 24 24" aria-hidden="true">{shapes[name]||shapes.arrow}</svg>;
+    }
+
+    function ExternalLink({href,children,className="button"}){
+      return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}<Icon name="arrow"/></a>;
+    }
+
+    function PictureCase({openMedia}){
+      return <>
+        <header className="case-head reveal-title"><h2>从编辑，到规划与交付。</h2></header>
+        <div className="case-columns">
+          <section className="reveal-copy"><h3>我主要做了什么</h3><p>我参与需求取舍、模型选择、界面反馈与功能验收，通过 AI 协作推进开发。</p><h3 className="purpose-heading">要解决什么问题</h3><p>把一句修图要求转成可确认的编辑步骤，保留手动调整、预览和导出的完整入口。</p></section>
+          <section className="case-focus reveal-copy"><h3>先确认计划，再执行</h3><MediaButton id="picture-workbench" onOpen={openMedia}/></section>
+        </div>
+        <ol className="build-path">
+          <li className="reveal-step"><span className="step-index" aria-hidden="true">01</span><div><h3>画布与图层</h3><p>素材上传、会话保存、裁剪调色与多图层编辑，支持历史回退和图片导出。</p></div></li>
+          <li className="reveal-step"><span className="step-index" aria-hidden="true">02</span><div><h3>规划与执行</h3><p>LangGraph 组织规划与校验，Pydantic 约束工具参数。确认计划后，由 Worker 处理任务并返回进度。</p></div></li>
+          <li className="reveal-step"><span className="step-index" aria-hidden="true">03</span><div><h3>本机交付</h3><p>连接接口、数据库、队列与图片存储，通过 Docker Compose 提供中文安装入口。</p></div></li>
+        </ol>
+        <div className="release-row reveal-copy"><div><h3>下载本机版本</h3><p id="picture-install-note">Windows x64 · 需 Docker Desktop</p></div><ExternalLink className="button primary" href="https://github.com/nigu666/ai-picture-editor/releases/latest">下载体验</ExternalLink><ExternalLink className="text-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0">版本说明 · v0.1.0</ExternalLink></div>
+        <details className="project-notes" onToggle={()=>window.ScrollTrigger?.refresh()}><summary>安装与许可</summary><div><p>当前提供本机使用版本。云端 AI 需自行配置阿里云百炼北京地域密钥、网络和模型权限，调用可能产生费用。静态作品集不提供在线修图服务，也不保存模型密钥。</p><p>学习参考编程导航 AI 修图智能体教程；本项目自行实现部分采用 MIT 许可，第三方框架、服务与模型保留各自授权。</p></div></details>
+      </>;
+    }
+
+    function DifyCase({filter,setFilter,visibleMedia,openMedia}){
+      return <>
+        <header className="case-head reveal-title"><h2>知识问答和业务查询，<br className="mobile-break"/>各走对应的流程。</h2></header>
+        <div className="case-columns">
+          <section className="reveal-copy"><h3>我的工作</h3><p>整理养殖资料，配置 RAG 检索、提示词与工作流；提取查询参数，映射设备 ID，处理已有业务接口的返回与异常分支。</p></section>
+          <section className="reveal-copy"><h3>业务流程</h3><p>知识问题进入检索回答，设备问题进入工具调用。匹配到多个设备时，先追问编号或池体，再继续查询。</p></section>
+        </div>
+        <div className="evidence-tools"><div className="filters" role="group" aria-label="筛选技术证据">{FILTERS.map(item=><button className="filter" type="button" key={item.id} aria-pressed={filter===item.id} onClick={()=>setFilter(item.id)}>{item.label}</button>)}</div><span className="evidence-count" aria-live="polite">{visibleMedia.length} 项证据</span></div>
+        <div className="evidence-grid" key={filter}>{visibleMedia.map(item=><article className="evidence-item" key={item.id}><MediaButton id={item.id} onOpen={openMedia}/><h3>{item.title}</h3><p>{item.caption}</p></article>)}</div>
+        <section className="mobile-section">
+          <div className="mobile-copy reveal-copy"><h3>移动端 AI 入口</h3><p>完成 AI 入口、对话面板、消息状态与接口异常反馈，参与现有 Vue2 页面的迁移适配和接口联调。</p><p>移动端为交互原型，在线服务不可用时会显示异常提示。</p><ExternalLink href="../zhihui-shuichan-jiaohu-yuanxing/智慧水产设备管理助手/">打开移动端原型</ExternalLink></div>
+          <div className="mobile-visuals"><MediaButton id="mobile-home" onOpen={openMedia}/><MediaButton id="mobile-chat" onOpen={openMedia}/></div>
+        </section>
+      </>;
+    }
+
+    function WebCase(){
+      return <>
+        <header className="case-head reveal-title"><h2>把业务关系，整理成能操作的页面。</h2></header>
+        <div className="case-columns">
+          <section className="reveal-copy"><h3>负责内容</h3><ul className="scope-list"><li>参与需求沟通，梳理业务字段与页面关系</li><li>综合看板及设备、生产模块的交互原型</li><li>筛选、分页、抽屉、表单与页面状态联动</li></ul></section>
+          <section className="reveal-copy"><h3>联动问题怎么处理</h3><p>针对维修工单与经验库记录不一致的问题，统一业务 ID，补充状态判断和提交校验，让维修记录、经验提交与审核结果能够对应。</p></section>
+        </div>
+        <div className="business-flow"><h3>异常处理流程</h3><ol><li className="reveal-step">巡检异常</li><li aria-hidden="true"><Icon name="right"/></li><li className="reveal-step">报修</li><li aria-hidden="true"><Icon name="right"/></li><li className="reveal-step">维修工单</li></ol></div>
+        <div className="actions"><ExternalLink className="button primary" href="../zhihui-shuichan-jiaohu-yuanxing/智慧增殖站综合看板/">打开 Web 原型</ExternalLink><ExternalLink href="https://github.com/nigu666/zhihui-shuichan-jiaohu-yuanxing">原型仓库</ExternalLink></div>
+      </>;
+    }
+
+    function TwinCase({openMedia}){
+      return <>
+        <header className="case-head reveal-title"><h2>让监控信息更容易找到。</h2></header>
+        <div className="case-columns">
+          <section className="reveal-copy"><h3>负责内容</h3><p>界面布局、图表交互、视频墙与场景切换，组织水质、设备、告警和监控信息。</p></section>
+          <section className="reveal-copy"><h3>页面与交互</h3><p>围绕数据驾驶舱、视频墙和数字孪生场景，完成信息分组、图表交互与场景切换等原型展示。</p></section>
+        </div>
+        <div className="twin-visuals"><figure className="twin-main"><MediaButton id="dashboard" onOpen={openMedia}/></figure><div className="twin-support"><MediaButton id="twin-scene" onOpen={openMedia}/><MediaButton id="video" onOpen={openMedia}/></div></div>
+        <div className="actions"><ExternalLink className="button primary" href="../zhihui-shuichan-jiaohu-yuanxing/渔立方数据驾驶舱/">打开数据驾驶舱</ExternalLink><ExternalLink href="../zhihui-shuichan-jiaohu-yuanxing/渔立方数字孪生养殖系统/">打开监控原型</ExternalLink></div>
+      </>;
+    }
+
+    function selectedFromHash(){
+      let hash=location.hash.slice(1);
+      try{hash=decodeURIComponent(hash);}catch{}
+      const index=PROJECTS.findIndex(item=>hash===item.section||hash==="work="+item.id);
+      const saved=PROJECTS.findIndex(item=>item.id===new URLSearchParams(location.search).get("project"));
+      return index<0?Math.max(0,saved):index;
+    }
+
+    function App(){
+      const [selected,setSelected]=React.useState(selectedFromHash),[direction,setDirection]=React.useState(1);
+      const [filter,setFilter]=React.useState("all"),[lightbox,setLightbox]=React.useState(null);
+      const scope=React.useRef(null),initial=React.useRef(true);
+      const project=PROJECTS[selected],cover=mediaById(project.media);
+      const visibleMedia=filter==="all"?ENGINEERING_MEDIA:ENGINEERING_MEDIA.filter(item=>item.group===filter);
+
+      function selectProject(index,focus=false){
+        if(index!==selected){setDirection(index>selected?1:-1);setSelected(index);setFilter("all");}
+        const url=new URL(location.href);
+        url.searchParams.set("project",PROJECTS[index].id);
+        url.hash="work="+PROJECTS[index].id;
+        history.replaceState(null,"",url);
+        if(focus)document.getElementById("project-tab-"+PROJECTS[index].id)?.focus({preventScroll:true});
+      }
+      function onProjectKey(event){
+        let next;
+        if(event.key==="ArrowRight")next=(selected+1)%PROJECTS.length;
+        if(event.key==="ArrowLeft")next=(selected-1+PROJECTS.length)%PROJECTS.length;
+        if(event.key==="Home")next=0;
+        if(event.key==="End")next=PROJECTS.length-1;
+        if(next!==undefined){event.preventDefault();selectProject(next,true);}
+      }
+      function openMedia(id,trigger){
+        const item=mediaById(id);
+        const items=ENGINEERING_MEDIA.some(media=>media.id===id)?(visibleMedia.some(media=>media.id===id)?visibleMedia:ENGINEERING_MEDIA):MEDIA.filter(media=>media.group===item.group);
+        setLightbox({items,index:items.findIndex(media=>media.id===id),trigger});
+      }
+      React.useEffect(()=>{
+        const onHash=()=>{
+          const hash=location.hash.slice(1);
+          const index=PROJECTS.findIndex(item=>hash===item.section||hash==="work="+item.id);
+          if(index>=0){setSelected(index);setFilter("all");}
+        };
+        window.addEventListener("hashchange",onHash);
+        return()=>window.removeEventListener("hashchange",onHash);
+      },[]);
+      React.useEffect(()=>{
+        const legacy=PROJECTS.some(item=>location.hash==="#"+item.section);
+        if(initial.current&&legacy)requestAnimationFrame(()=>document.getElementById(project.section)?.scrollIntoView());
+        initial.current=false;
+      },[selected]);
+      React.useEffect(()=>{
+        if(!window.gsap||!window.ScrollTrigger)return;
+        gsap.registerPlugin(ScrollTrigger);
+        const mm=gsap.matchMedia();
+        mm.add({desktop:"(min-width: 761px)",mobile:"(max-width: 760px)",reduce:"(prefers-reduced-motion: reduce)"},context=>{
+          if(context.conditions.reduce)return;
+          const ctx=gsap.context(()=>{
+            gsap.to(".stage-screen",{scale:.84,y:context.conditions.desktop?52:24,ease:"none",scrollTrigger:{trigger:".stage",start:"top top",end:context.conditions.desktop?"+=340":"+=190",scrub:true}});
+            gsap.utils.toArray(".reveal-title").forEach(node=>gsap.from(node,{y:18,opacity:0,duration:.48,ease:"power3.out",scrollTrigger:{trigger:node,start:"top 94%",once:true}}));
+            gsap.utils.toArray(".reveal-copy").forEach(node=>gsap.from(node,{opacity:0,duration:.45,ease:"power2.out",scrollTrigger:{trigger:node,start:"top 94%",once:true}}));
+            gsap.utils.toArray(".reveal-step").forEach((node,index)=>gsap.from(node,{x:-18,opacity:0,duration:.42,delay:index%3*.06,ease:"power3.out",scrollTrigger:{trigger:node,start:"top 95%",once:true}}));
+          },scope);
+          return()=>ctx.revert();
+        });
+        return()=>mm.revert();
+      },[selected]);
+      React.useEffect(()=>{const frame=requestAnimationFrame(()=>window.ScrollTrigger?.refresh());return()=>cancelAnimationFrame(frame);},[filter]);
+
+      return <>
+        <div id="page-shell" ref={scope}>
+          <a className="skip-link" href="#catalog">跳到作品</a>
+          <div className="wrap">
+            <header className="masthead" id="profile">
+              <a className="identity" href="#profile" aria-label="雷雨天，返回顶部"><span className="identity-mark"><Icon name="code"/></span><div><h1>雷雨天</h1><p className="role">AI 应用开发</p></div></a>
+              <div className="personal"><p className="intro">最近主要在做 AI 修图，也把实习做过的几个项目整理到了这里。</p><p className="school">武汉轻工大学<br/>软件工程 · 2027 届</p><nav className="quick-links" aria-label="主导航"><a href="#catalog">作品</a><a href="#skills">技术与实践</a><a href="#contact">联系</a></nav></div>
+            </header>
+            <main>
+              <section className="showcase" id="catalog" aria-label="作品放映厅">
+                <div id="showcase-panel" role="tabpanel" aria-labelledby={"project-tab-"+project.id} tabIndex="0">
+                  <div className={"stage stage-"+project.id}>
+                    <button type="button" className="stage-screen" aria-label={"放大查看"+cover.title} aria-haspopup="dialog" onClick={event=>openMedia(project.media,event.currentTarget)}><img className="stage-artwork" style={{"--enter-x":direction*16+"px"}} key={project.id} src={cover.src} alt={cover.alt} fetchPriority="high"/></button>
+                    <button type="button" className="stage-zoom" onClick={event=>openMedia(project.media,event.currentTarget)} aria-label={"放大"+project.name+"画面"}><Icon name="zoom"/><span>放大画面</span></button>
+                  </div>
+                  <div className="project-caption" key={project.id}><div><h2 id="current-project">{project.name}</h2><p className="project-kind">{project.kind}</p></div><div className="project-description"><p>{project.id==="picture"?<><span className="keep">自然语言规划修图，</span><span className="keep">画布编辑、预览与导出。</span></>:project.description}</p><p className="technical">{project.technical}</p></div><a className="button primary project-cta" href="#case-study">查看项目<Icon name="down"/></a></div>
+                </div>
+                <div className="project-picker" role="tablist" aria-label="选择作品" style={{"--active":selected,"--column":selected%2,"--row":Math.floor(selected/2)}} onKeyDown={onProjectKey}>
+                  <span className="picker-indicator" aria-hidden="true"/>
+                  {PROJECTS.map((item,index)=><button type="button" className="project-entry" id={"project-tab-"+item.id} key={item.id} role="tab" aria-label={item.name} aria-selected={index===selected} aria-controls="showcase-panel" tabIndex={index===selected?0:-1} onClick={()=>selectProject(index)}><img className="project-preview" src={mediaById(item.media).src} alt=""/><span className="project-entry-copy"><span className="project-entry-name">{item.name}</span><span className="project-entry-short">{["AI 修图","水产 AI","Web 原型","数据可视化"][index]}</span><Icon name={item.icon}/></span></button>)}
+                </div>
+              </section>
+
+              <article className="case-study" id="case-study" aria-label={project.name+"项目详情"}><div id={project.section} key={project.id}>
+                <div className="case-top"><p>{project.name}</p><ExternalLink className="text-link" href={project.url}>{project.linkLabel}</ExternalLink></div>
+                {project.id==="picture"&&<PictureCase openMedia={openMedia}/>}
+                {project.id==="dify"&&<DifyCase filter={filter} setFilter={setFilter} visibleMedia={visibleMedia} openMedia={openMedia}/>}
+                {project.id==="web"&&<WebCase/>}
+                {project.id==="twin"&&<TwinCase openMedia={openMedia}/>}
+              </div></article>
+
+              <section className="expertise" id="skills" aria-labelledby="skills-title"><header className="reveal-title"><h2 id="skills-title">技术与实践</h2></header><div className="skill-rows">
+                <article className="skill-row reveal-copy"><h3>Python 与后端</h3><p>结合项目学习 Python、FastAPI 与 Pydantic；了解 SQLAlchemy / Alembic 数据管理、PostgreSQL 存储与异步任务。</p></article>
+                <article className="skill-row reveal-copy"><h3>Agent 与 RAG</h3><p>Dify 知识检索与业务工作流；LangGraph 规划、工具调用、结构化输出与人工确认。</p></article>
+                <article className="skill-row reveal-copy"><h3>前端与工程</h3><p>React、TypeScript 与 Konva 画布；JavaScript、HTML/CSS、SVG 交互原型，以及 Git 与 Docker Compose。</p></article>
+              </div></section>
+              <section className="contact" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">联系我</h2><div className="contact-links"><a className="contact-email" title="打开默认邮件应用" href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB"><Icon name="mail"/>3077602965@qq.com</a><ExternalLink className="contact-other" href="https://github.com/nigu666">GitHub 主页</ExternalLink><ExternalLink className="contact-other" href="../zhihui-shuichan-jiaohu-yuanxing/">更多交互作品</ExternalLink></div></section>
+            </main>
+            <footer className="footer"><span>雷雨天 · AI 应用开发</span><a href="#profile">返回顶部<Icon name="up"/></a></footer>
+          </div>
+        </div>
+        {lightbox&&<Lightbox items={lightbox.items} index={lightbox.index} trigger={lightbox.trigger} onClose={()=>setLightbox(null)} onChange={index=>setLightbox(current=>({...current,index}))}/>}
+      </>;
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
