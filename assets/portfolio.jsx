@@ -106,7 +106,7 @@
         <header className="case-head reveal-title"><h2>从编辑，到规划与交付。</h2></header>
         <div className="case-columns">
           <section className="reveal-copy"><h3>我主要做了什么</h3><p>我参与需求取舍、模型选择、界面反馈与功能验收，通过 AI 协作推进开发。</p><h3 className="purpose-heading">要解决什么问题</h3><p>把一句修图要求转成可确认的编辑步骤，保留手动调整、预览和导出的完整入口。</p></section>
-          <section className="case-focus reveal-copy"><h3>先确认计划，再执行</h3><MediaButton id="picture-workbench" onOpen={openMedia}/></section>
+          <section className="case-focus reveal-copy"><h3>画布、图层与 AI 指令</h3><MediaButton id="picture-workbench" onOpen={openMedia}/></section>
         </div>
         <ol className="build-path">
           <li className="reveal-step"><span className="step-index" aria-hidden="true">01</span><div><h3>画布与图层</h3><p>素材上传、会话保存、裁剪调色与多图层编辑，支持历史回退和图片导出。</p></div></li>
@@ -189,6 +189,10 @@
         if(event.key==="End")next=PROJECTS.length-1;
         if(next!==undefined){event.preventDefault();selectProject(next,true);}
       }
+      function showCase(index){
+        selectProject(index);
+        requestAnimationFrame(()=>document.getElementById('case-study')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
+      }
       function openMedia(id,trigger){
         const item=mediaById(id);
         const items=ENGINEERING_MEDIA.some(media=>media.id===id)?(visibleMedia.some(media=>media.id===id)?visibleMedia:ENGINEERING_MEDIA):MEDIA.filter(media=>media.group===item.group);
@@ -232,7 +236,8 @@
           <div className="wrap">
             <header className="masthead" id="profile">
               <a className="identity" href="#profile" aria-label="雷雨天，返回顶部"><span className="identity-mark"><Icon name="code"/></span><div><h1>雷雨天</h1><p className="role">AI 应用开发</p></div></a>
-              <div className="personal"><p className="intro">最近主要在做 AI 修图，也把实习做过的几个项目整理到了这里。</p><p className="school">武汉轻工大学<br/>软件工程 · 2027 届</p><nav className="quick-links" aria-label="主导航"><a href="#catalog">作品</a><a href="#skills">技术与实践</a><a href="#contact">联系</a></nav></div>
+              <nav className="quick-links" aria-label="主导航"><a href="#catalog">作品</a><a href="#skills">技术与实践</a><a href="#contact">联系<Icon name="right"/></a></nav>
+              <p className="intro">最近在做 AI 修图，<br className="intro-break"/>这里也放了我的实习项目。</p><p className="school">武汉轻工大学 · 软件工程 · 2027 届</p>
             </header>
             <main>
               <section className="showcase" id="catalog" aria-label="作品放映厅">
@@ -241,7 +246,7 @@
                     <button type="button" className="stage-screen" aria-label={"放大查看"+cover.title} aria-haspopup="dialog" onClick={event=>openMedia(project.media,event.currentTarget)}><img className="stage-artwork" style={{"--enter-x":direction*16+"px"}} key={project.id} src={cover.src} alt={cover.alt} fetchPriority="high"/></button>
                     <button type="button" className="stage-zoom" onClick={event=>openMedia(project.media,event.currentTarget)} aria-label={"放大"+project.name+"画面"}><Icon name="zoom"/><span>放大画面</span></button>
                   </div>
-                  <div className="project-caption" key={project.id}><div><h2 id="current-project">{project.name}</h2><p className="project-kind">{project.kind}</p></div><div className="project-description"><p>{project.id==="picture"?<><span className="keep">自然语言规划修图，</span><span className="keep">画布编辑、预览与导出。</span></>:project.description}</p><p className="technical">{project.technical}</p></div><a className="button primary project-cta" href="#case-study">查看项目<Icon name="down"/></a></div>
+                  <div className="project-caption" key={project.id}><div><h2 id="current-project">{project.name}</h2><p className="project-kind">{project.kind}</p></div><div className="project-description"><p>{project.id==="picture"?<><span className="keep">自然语言规划修图，</span><span className="keep">画布编辑、预览与导出。</span></>:project.description}</p></div><a className="button primary project-cta" href="#case-study">查看项目<Icon name="down"/></a></div>
                 </div>
                 <div className="project-picker" role="tablist" aria-label="选择作品" style={{"--active":selected,"--column":selected%2,"--row":Math.floor(selected/2)}} onKeyDown={onProjectKey}>
                   <span className="picker-indicator" aria-hidden="true"/>
@@ -258,11 +263,11 @@
               </div></article>
 
               <section className="expertise" id="skills" aria-labelledby="skills-title"><header className="reveal-title"><h2 id="skills-title">技术与实践</h2></header><div className="skill-rows">
-                <article className="skill-row reveal-copy"><h3>Python 与后端</h3><p>结合项目学习 Python、FastAPI 与 Pydantic；了解 SQLAlchemy / Alembic 数据管理、PostgreSQL 存储与异步任务。</p></article>
-                <article className="skill-row reveal-copy"><h3>Agent 与 RAG</h3><p>Dify 知识检索与业务工作流；LangGraph 规划、工具调用、结构化输出与人工确认。</p></article>
-                <article className="skill-row reveal-copy"><h3>前端与工程</h3><p>React、TypeScript 与 Konva 画布；JavaScript、HTML/CSS、SVG 交互原型，以及 Git 与 Docker Compose。</p></article>
+                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">01</span><h3>接口与任务</h3></div><div><p>结合修图项目学习 Python、FastAPI 与 Pydantic，梳理请求校验、数据保存和异步任务。</p><button type="button" className="practice-link" onClick={()=>showCase(0)}>看修图项目<Icon name="right"/></button></div></article>
+                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">02</span><h3>检索与工作流</h3></div><div><p>在 Dify 中配置知识检索与业务分支；结合修图项目理解 LangGraph 规划、工具调用和人工确认。</p><button type="button" className="practice-link" onClick={()=>showCase(1)}>看水产 AI 实践<Icon name="right"/></button></div></article>
+                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">03</span><h3>交互与交付</h3></div><div><p>参与交互原型、页面迁移和界面验收，通过 AI 协作推进 React 画布与本机交付，继续学习 JavaScript、Git 和 Docker。</p><button type="button" className="practice-link" onClick={()=>showCase(2)}>看交互原型<Icon name="right"/></button></div></article>
               </div></section>
-              <section className="contact" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">联系我</h2><div className="contact-links"><a className="contact-email" title="打开默认邮件应用" href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB"><Icon name="mail"/>3077602965@qq.com</a><ExternalLink className="contact-other" href="https://github.com/nigu666">GitHub 主页</ExternalLink><ExternalLink className="contact-other" href="../zhihui-shuichan-jiaohu-yuanxing/">更多交互作品</ExternalLink></div></section>
+              <section className="contact" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">聊聊项目，<br/>也聊聊机会。</h2><div className="contact-links"><a className="contact-email" title="打开默认邮件应用" href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB"><Icon name="mail"/>3077602965@qq.com</a><div className="contact-more"><ExternalLink className="contact-other" href="https://github.com/nigu666">GitHub 主页</ExternalLink><ExternalLink className="contact-other" href="../zhihui-shuichan-jiaohu-yuanxing/">更多交互作品</ExternalLink></div></div></section>
             </main>
             <footer className="footer"><span>雷雨天 · AI 应用开发</span><a href="#profile">返回顶部<Icon name="up"/></a></footer>
           </div>
