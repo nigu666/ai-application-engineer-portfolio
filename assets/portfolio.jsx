@@ -235,9 +235,9 @@
           <a className="skip-link" href="#catalog">跳到作品</a>
           <div className="wrap">
             <header className="masthead" id="profile">
-              <a className="identity" href="#profile" aria-label="雷雨天，返回顶部"><span className="identity-mark"><Icon name="code"/></span><div><h1>雷雨天</h1><p className="role">AI 应用开发</p></div></a>
+              <a className="identity" href="#profile" aria-label="雷雨天，返回顶部"><div><h1>雷雨天<span className="name-dot" aria-hidden="true">.</span></h1><p className="role">AI 应用开发</p></div></a>
               <nav className="quick-links" aria-label="主导航"><a href="#catalog">作品</a><a href="#skills">技术与实践</a><a href="#contact">联系<Icon name="right"/></a></nav>
-              <p className="intro">最近在做 AI 修图，<br className="intro-break"/>这里也放了我的实习项目。</p><p className="school">武汉轻工大学 · 软件工程 · 2027 届</p>
+              <p className="school">武汉轻工大学 · 软件工程 · 2027 届</p>
             </header>
             <main>
               <section className="showcase" id="catalog" aria-label="作品放映厅">
