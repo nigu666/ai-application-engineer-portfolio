@@ -15,6 +15,9 @@
     ];
     const FILTERS=[{id:"all",label:"全部证据"},{id:"workflow",label:"工作流"},{id:"rag",label:"知识检索"},{id:"api",label:"业务 API"}];
     MEDIA.push(
+      {id:"picture-context",group:"picture",title:"会话、画布与图层上下文",src:"assets/ai-picture-editor/process-context.png?v=steps",alt:"真实会话的1200乘800画布、修订2与底图图层面板",caption:"会话与图层面板实拍。图中为完成翻转后的修订2，下一轮规划将读取这一已保存状态。"},
+      {id:"picture-parameters",group:"picture",title:"工具参数与依赖记录",src:"assets/ai-picture-editor/process-parameters.png?v=steps",alt:"真实计划记录展开完整参数，operation为flip_horizontal，depends_on为空",caption:"从已保存的实际计划展开参数：transform_canvas 使用 flip_horizontal；此步骤没有前置依赖。"},
+      {id:"picture-export",group:"picture",title:"已保存画面的导出设置",src:"assets/ai-picture-editor/process-export.png?v=steps",alt:"真实导出面板，选择当前画布原尺寸与PNG格式，提供下载PNG入口",caption:"导出面板实拍：当前可见画面为1200×800，选择原尺寸与PNG；导出不包含未采用候选。"},
       {id:"picture-plan",group:"picture",title:"待确认的实际工具计划",src:"assets/ai-picture-editor/process-plan.png?v=paired",alt:"真实运行的待确认水平翻转计划，包含工具名称、等待确认状态及确认执行按钮，画布修订为1",caption:"同一次运行的执行前状态：将水平翻转要求明确为 transform_canvas / flip_horizontal，核对步骤后再确认。此时画布修订为1。"},
       {id:"picture-result",group:"picture",title:"执行完成与画布结果",src:"assets/ai-picture-editor/process-result.png?v=paired",alt:"水平翻转后的真实画布与已完成计划记录",caption:"确认后执行本地翻转，结果保存到会话。此例验证本地编辑链路，不涉及AI生图或云端图片处理。"}
     );
@@ -110,6 +113,10 @@
       return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}<Icon name="arrow"/></a>;
     }
 
+    function StepIllustration({media,nodes,caption,note,onOpen}){
+      return <div className="step-illustration"><figure><MediaButton id={media} onOpen={onOpen}/><figcaption>{caption}</figcaption></figure><aside className="step-diagram" aria-label="运行逻辑图解"><h4>运行逻辑</h4><ol>{nodes.map((node,index)=><li key={node}>{index>0&&<Icon name="down"/>}<span>{node}</span></li>)}</ol>{note&&<p className="diagram-note">{note}</p>}</aside></div>;
+    }
+
     function PictureCase({openMedia}){
       return <>
         <header className="case-head reveal-title"><h2><span className="title-phrase">从编辑，</span><span className="title-phrase">到规划与交付。</span></h2></header>
@@ -125,13 +132,12 @@
         <section className="agent-story" aria-labelledby="agent-story-title">
           <header className="case-head reveal-title"><h2 id="agent-story-title"><span className="title-phrase">一句要求，</span><span className="title-phrase">怎样变成一次编辑？</span></h2><p className="story-lead">以“将当前画布水平翻转”为例，沿着一次真实操作看输入、规划、确认和结果。</p></header>
           <ol className="agent-journey">
-            <li><span className="journey-number">01</span><div><h3>读取正在编辑的画布</h3><p>先确认会话、画布尺寸和当前版本，收集候选素材、图层及已有选区。启用视觉分析时，把已保存图层合成预览交给模型，作为本轮修改的上下文。</p></div><span className="journey-output">会话与版本</span></li>
-            <li><span className="journey-number">02</span><div><h3>把要求转成工具步骤</h3><p>模型提出工具与参数；LangGraph 依次经过规划和校验。服务端再检查工具是否注册、参数格式、依赖关系和素材归属。当前最多规划 8 步，需要局部编辑时还要核对选区。</p></div><span className="journey-output">可核对的计划</span></li>
-            <li><span className="journey-number">03</span><div><h3>由人确认要执行什么</h3><p>页面展示实际步骤、参数和依赖，核对完整后再确认。参数校验通过，也需要检查模型是否漏掉要求；不合适时可以取消并重新描述。确认前不修改画布。</p></div><span className="journey-output">确认或取消</span></li>
-            <li><span className="journey-number">04</span><div><h3>按顺序推进，记录每一步</h3><p>翻转、裁剪和调色等本地工具直接保存编辑；生图、整图编辑等图片任务进入队列，由 Worker 处理并返回状态。每次推进核对预期版本，画布变化后停止剩余步骤。</p></div><span className="journey-output">步骤与任务状态</span></li>
-            <li><span className="journey-number">05</span><div><h3>检查结果，再决定保留</h3><p>本地修改进入编辑历史，可以撤销。图片任务完成后把结果加入候选区，用户再决定是否采用。最终按已保存的画布合成导出 PNG、JPG，或多尺寸 ZIP。</p></div><span className="journey-output">可继续编辑的结果</span></li>
+            <li><span className="journey-number">01</span><div><h3>读取正在编辑的画布</h3><p>先确认会话、画布尺寸和当前版本，收集候选素材、图层及已有选区。启用视觉分析时，把已保存图层合成预览交给模型，作为本轮修改的上下文。</p><StepIllustration media="picture-context" nodes={['已保存的编辑会话','读取尺寸、版本与图层','构成本轮规划上下文']} caption="看会话标题、左下角尺寸与修订，以及右侧图层面板。此图为修订2，展示下一轮规划读取的已保存状态。" note="上下文读取逻辑示意；界面截图展示可核对的会话字段。" onOpen={openMedia}/></div></li>
+            <li><span className="journey-number">02</span><div><h3>把要求转成工具步骤</h3><p>模型提出工具与参数；LangGraph 依次经过规划和校验。服务端再检查工具是否注册、参数格式、依赖关系和素材归属。当前最多规划 8 步，需要局部编辑时还要核对选区。</p><StepIllustration media="picture-parameters" nodes={['接收修改要求','模型提出工具与参数','校验参数及步骤依赖']} caption="展开实际计划的完整参数：operation 为 flip_horizontal，depends_on 为空。截图来自执行后保存的记录。" note="本例工具为 transform_canvas，参数检查通过后才进入可确认的计划。" onOpen={openMedia}/></div></li>
+            <li><span className="journey-number">03</span><div><h3>由人确认要执行什么</h3><p>页面展示实际步骤、参数和依赖，核对完整后再确认。参数校验通过，也需要检查模型是否漏掉要求；不合适时可以取消并重新描述。确认前不修改画布。</p><StepIllustration media="picture-plan" nodes={['待确认：0 / 1 步','核对工具、参数与目标','确认执行，或取消计划']} caption="看右侧“待你确认”和确认按钮：计划为0/1步，左下角画布仍是修订1。" note="此演示明确指定了翻转工具与参数；确认前保留原画布。" onOpen={openMedia}/></div></li>
+            <li><span className="journey-number">04</span><div><h3>按顺序推进，记录每一步</h3><p>翻转、裁剪和调色等本地工具直接保存编辑；生图、整图编辑等图片任务进入队列，由 Worker 处理并返回状态。每次推进核对预期版本，画布变化后停止剩余步骤。</p><StepIllustration media="picture-result" nodes={['核对预期画布版本','执行本地水平翻转','完成1 / 1步，保存修订2']} caption="与上一张同一次运行：海报左右翻转，右侧步骤已完成，左下角修订更新为2。" note="图片任务另走“队列 → Worker → 候选”分支；本张截图只展示本地翻转完成。" onOpen={openMedia}/></div></li>
+            <li><span className="journey-number">05</span><div><h3>检查结果，再决定保留</h3><p>本地修改进入编辑历史，可以撤销。图片任务完成后把结果加入候选区，用户再决定是否采用。最终按已保存的画布合成导出 PNG、JPG，或多尺寸 ZIP。</p><StepIllustration media="picture-export" nodes={['检查并保存当前画布','选择尺寸与文件格式','合成可见图层并下载']} caption="打开“导出成品”：本次面板选中原尺寸1200×800和PNG，下载入口与导出范围可直接核对。" note="此图展示导出设置；未采用的候选、选区标记和视口缩放不进入成品。" onOpen={openMedia}/></div></li>
           </ol>
-          <div className="process-evidence"><figure><MediaButton id="picture-plan" onOpen={openMedia}/><figcaption><h3>执行前：核对实际工具步骤</h3><p>待确认状态为 0 / 1 步，画布修订为 1。本次明确了翻转工具与参数，仍需点击确认才会执行。</p></figcaption></figure><figure><MediaButton id="picture-result" onOpen={openMedia}/><figcaption><h3>执行后：查看画布与记录</h3><p>同一次运行完成水平翻转，计划为 1 / 1 步，画布修订更新为 2，可用撤销恢复。</p></figcaption></figure></div>
           <details className="agent-details" onToggle={()=>window.ScrollTrigger?.refresh()}><summary>画布变了、执行中断了，会怎样？</summary><div className="agent-detail-grid"><section><h3>版本变化</h3><p>规划和执行绑定画布版本。中途手动修改后，旧计划停止推进，避免用旧上下文继续编辑。</p></section><section><h3>任务中断</h3><p>已提交的图片任务保留编号。符合恢复条件时读取原结果或查询原任务；本地失败步骤回滚后，可明确选择重试该步。</p></section><section><h3>取消与撤销</h3><p>取消会停止后续步骤，已完成的编辑仍保留；已提交的图片任务可能继续。需要恢复画布时使用撤销。</p></section></div></details>
         </section>
         <div className="release-row reveal-copy"><div><h3>下载本机版本</h3><p id="picture-install-note">Windows x64 · 需 Docker Desktop</p></div><ExternalLink className="button primary" href="https://github.com/nigu666/ai-picture-editor/releases/latest">下载体验</ExternalLink><ExternalLink className="text-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0">版本说明 · v0.1.0</ExternalLink></div>
