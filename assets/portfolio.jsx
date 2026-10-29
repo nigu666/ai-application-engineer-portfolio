@@ -15,7 +15,8 @@
     ];
     const FILTERS=[{id:"all",label:"全部证据"},{id:"workflow",label:"工作流"},{id:"rag",label:"知识检索"},{id:"api",label:"业务 API"}];
     MEDIA.push(
-      {id:"picture-result",group:"picture",title:"执行完成与画布结果",src:"assets/ai-picture-editor/process-result.png",alt:"水平翻转后的真实画布与已完成计划记录",caption:"确认后执行本地翻转，结果保存到会话。此例验证本地编辑链路，不涉及AI生图或云端图片处理。"}
+      {id:"picture-plan",group:"picture",title:"待确认的实际工具计划",src:"assets/ai-picture-editor/process-plan.png?v=paired",alt:"真实运行的待确认水平翻转计划，包含工具名称、等待确认状态及确认执行按钮，画布修订为1",caption:"同一次运行的执行前状态：将水平翻转要求明确为 transform_canvas / flip_horizontal，核对步骤后再确认。此时画布修订为1。"},
+      {id:"picture-result",group:"picture",title:"执行完成与画布结果",src:"assets/ai-picture-editor/process-result.png?v=paired",alt:"水平翻转后的真实画布与已完成计划记录",caption:"确认后执行本地翻转，结果保存到会话。此例验证本地编辑链路，不涉及AI生图或云端图片处理。"}
     );
     const ENGINEERING_MEDIA=MEDIA.slice(0,6);
     const mediaById=id=>MEDIA.find(item=>item.id===id);
@@ -130,7 +131,7 @@
             <li><span className="journey-number">04</span><div><h3>按顺序推进，记录每一步</h3><p>翻转、裁剪和调色等本地工具直接保存编辑；生图、整图编辑等图片任务进入队列，由 Worker 处理并返回状态。每次推进核对预期版本，画布变化后停止剩余步骤。</p></div><span className="journey-output">步骤与任务状态</span></li>
             <li><span className="journey-number">05</span><div><h3>检查结果，再决定保留</h3><p>本地修改进入编辑历史，可以撤销。图片任务完成后把结果加入候选区，用户再决定是否采用。最终按已保存的画布合成导出 PNG、JPG，或多尺寸 ZIP。</p></div><span className="journey-output">可继续编辑的结果</span></li>
           </ol>
-          <div className="process-evidence"><figure><MediaButton id="picture-result" onOpen={openMedia}/><figcaption><h3>执行后：查看画布与记录</h3><p>本地水平翻转已完成，页面显示结果及保存后的状态。</p></figcaption></figure></div>
+          <div className="process-evidence"><figure><MediaButton id="picture-plan" onOpen={openMedia}/><figcaption><h3>执行前：核对实际工具步骤</h3><p>待确认状态为 0 / 1 步，画布修订为 1。本次明确了翻转工具与参数，仍需点击确认才会执行。</p></figcaption></figure><figure><MediaButton id="picture-result" onOpen={openMedia}/><figcaption><h3>执行后：查看画布与记录</h3><p>同一次运行完成水平翻转，计划为 1 / 1 步，画布修订更新为 2，可用撤销恢复。</p></figcaption></figure></div>
           <details className="agent-details" onToggle={()=>window.ScrollTrigger?.refresh()}><summary>画布变了、执行中断了，会怎样？</summary><div className="agent-detail-grid"><section><h3>版本变化</h3><p>规划和执行绑定画布版本。中途手动修改后，旧计划停止推进，避免用旧上下文继续编辑。</p></section><section><h3>任务中断</h3><p>已提交的图片任务保留编号。符合恢复条件时读取原结果或查询原任务；本地失败步骤回滚后，可明确选择重试该步。</p></section><section><h3>取消与撤销</h3><p>取消会停止后续步骤，已完成的编辑仍保留；已提交的图片任务可能继续。需要恢复画布时使用撤销。</p></section></div></details>
         </section>
         <div className="release-row reveal-copy"><div><h3>下载本机版本</h3><p id="picture-install-note">Windows x64 · 需 Docker Desktop</p></div><ExternalLink className="button primary" href="https://github.com/nigu666/ai-picture-editor/releases/latest">下载体验</ExternalLink><ExternalLink className="text-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0">版本说明 · v0.1.0</ExternalLink></div>
