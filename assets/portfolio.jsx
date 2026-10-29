@@ -113,8 +113,50 @@
       return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}<Icon name="arrow"/></a>;
     }
 
+    function RunComparison({onOpen}){
+      const [position,setPosition]=React.useState(35);
+      const before=mediaById('picture-plan'),after=mediaById('picture-result');
+      function moveSplit(event){const rect=event.currentTarget.getBoundingClientRect();setPosition(Math.round(Math.max(0,Math.min(100,(event.clientX-rect.left)/rect.width*100))));}
+      return <div className="run-comparison">
+        <div className="comparison-labels"><span>执行前 · 修订 1</span><span>执行后 · 修订 2</span></div>
+        <div className="comparison-images" style={{'--split':position+'%'}} onPointerDown={event=>{if(event.button!==0)return;event.currentTarget.setPointerCapture(event.pointerId);moveSplit(event);}} onPointerMove={event=>{if(event.currentTarget.hasPointerCapture(event.pointerId))moveSplit(event);}} onPointerUp={event=>{if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);}}>
+          <div className="comparison-crop comparison-after"><img src={after.src} alt="执行后截图的画布局部：海报已水平翻转" loading="lazy" draggable="false"/></div>
+          <div className="comparison-crop comparison-before"><img src={before.src} alt="执行前截图的画布局部：原始海报" loading="lazy" draggable="false"/></div>
+          <span className="comparison-divider" aria-hidden="true"><span><Icon name="left"/><Icon name="right"/></span></span>
+        </div>
+        <label className="comparison-control"><span>拖动对比</span><input type="range" min="0" max="100" value={position} aria-label="前后截图对比分界" aria-valuetext={position===0?'完整显示执行后':position===100?'完整显示执行前':'左侧执行前 '+position+'%，右侧执行后 '+(100-position)+'%'} onChange={event=>setPosition(Number(event.target.value))}/></label>
+        <div className="comparison-links"><button type="button" onClick={event=>onOpen(before.id,event.currentTarget)}>放大执行前<Icon name="zoom"/></button><button type="button" onClick={event=>onOpen(after.id,event.currentTarget)}>放大执行后<Icon name="zoom"/></button></div>
+      </div>;
+    }
+
     function StepIllustration({media,nodes,caption,note,onOpen}){
-      return <div className="step-illustration"><figure><MediaButton id={media} onOpen={onOpen}/><figcaption>{caption}</figcaption></figure><aside className="step-diagram" aria-label="运行逻辑图解"><h4>运行逻辑</h4><ol>{nodes.map((node,index)=><li key={node}>{index>0&&<Icon name="down"/>}<span>{node}</span></li>)}</ol>{note&&<p className="diagram-note">{note}</p>}</aside></div>;
+      return <div className="step-illustration"><figure>{media==='picture-result'?<RunComparison onOpen={onOpen}/>:<MediaButton id={media} onOpen={onOpen}/>}<figcaption>{caption}</figcaption></figure><aside className="step-diagram" aria-label="运行逻辑图解"><h4>运行逻辑</h4><ol>{nodes.map((node,index)=><li key={node}>{index>0&&<Icon name="down"/>}<span>{node}</span></li>)}</ol>{note&&<p className="diagram-note">{note}</p>}</aside></div>;
+    }
+
+    const JOURNEY_LABELS=['读取画布','规划工具','人工确认','执行编辑','结果导出'];
+    function Journey({children}){
+      const [active,setActive]=React.useState(0),[expanded,setExpanded]=React.useState(false);
+      const container=React.useRef(null),panels=React.Children.toArray(children);
+      React.useEffect(()=>{const frame=requestAnimationFrame(()=>window.ScrollTrigger?.refresh());return()=>cancelAnimationFrame(frame);},[active,expanded]);
+      function select(index,focus=false){
+        setActive(index);
+        if(focus)document.getElementById('journey-tab-'+index)?.focus({preventScroll:true});
+      }
+      function keySelect(event){
+        const next={ArrowLeft:Math.max(0,active-1),ArrowRight:Math.min(4,active+1),Home:0,End:4}[event.key];
+        if(next!==undefined){event.preventDefault();select(next,true);}
+      }
+      function advance(step){
+        select(active+step);
+        const top=container.current.getBoundingClientRect().top;
+        if(top<64)container.current.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+      }
+      return <div className={'journey-reader'+(expanded?' is-expanded':'')} ref={container}>
+        <div className="journey-toolbar"><p>{expanded?'完整运行过程':'逐步看一次编辑'}</p><button type="button" className="journey-mode" aria-expanded={expanded} aria-controls="journey-panels" onClick={()=>{setExpanded(value=>!value);container.current.scrollIntoView({block:'start',behavior:'instant'});}}>{expanded?'收起为逐步阅读':'展开全部步骤'}<Icon name={expanded?'up':'down'}/></button></div>
+        {!expanded&&<div className="journey-tabs" role="tablist" aria-label="修图运行步骤" onKeyDown={keySelect} style={{'--step':active}}><span className="journey-indicator" aria-hidden="true"/>{JOURNEY_LABELS.map((label,index)=><button type="button" key={label} role="tab" id={'journey-tab-'+index} aria-selected={active===index} aria-controls={'journey-panel-'+index} tabIndex={active===index?0:-1} onClick={()=>select(index)}><span>{String(index+1).padStart(2,'0')}</span>{label}</button>)}</div>}
+        <ol id="journey-panels" className="agent-journey">{panels.map((child,index)=>React.cloneElement(child,{id:'journey-panel-'+index,hidden:!expanded&&active!==index,role:expanded?undefined:'tabpanel','aria-labelledby':expanded?undefined:'journey-tab-'+index,tabIndex:expanded?undefined:0}))}</ol>
+        {!expanded&&<div className="journey-footer"><button type="button" className="button" disabled={active===0} onClick={()=>advance(-1)}><Icon name="left"/>上一步</button><output aria-live="polite">{String(active+1).padStart(2,'0')} / 05<span className="sr-only"> · {JOURNEY_LABELS[active]}</span></output><button type="button" className="button primary" disabled={active===4} onClick={()=>advance(1)}>{active===4?'已到最后一步':'下一步'}<Icon name="right"/></button></div>}
+      </div>;
     }
 
     function PictureCase({openMedia}){
@@ -129,15 +171,15 @@
           <li className="reveal-step"><span className="step-index" aria-hidden="true">02</span><div><h3>规划与执行</h3><p>LangGraph 组织规划与校验，Pydantic 约束工具参数。确认计划后，由 Worker 处理任务并返回进度。</p></div></li>
           <li className="reveal-step"><span className="step-index" aria-hidden="true">03</span><div><h3>本机交付</h3><p>连接接口、数据库、队列与图片存储，通过 Docker Compose 提供中文安装入口。</p></div></li>
         </ol>
-        <section className="agent-story" aria-labelledby="agent-story-title">
+        <section className="agent-story" id="agent-process" aria-labelledby="agent-story-title">
           <header className="case-head reveal-title"><h2 id="agent-story-title"><span className="title-phrase">一句要求，</span><span className="title-phrase">怎样变成一次编辑？</span></h2><p className="story-lead">以“将当前画布水平翻转”为例，沿着一次真实操作看输入、规划、确认和结果。</p></header>
-          <ol className="agent-journey">
+          <Journey>
             <li><span className="journey-number">01</span><div><h3>读取正在编辑的画布</h3><p>先确认会话、画布尺寸和当前版本，收集候选素材、图层及已有选区。启用视觉分析时，把已保存图层合成预览交给模型，作为本轮修改的上下文。</p><StepIllustration media="picture-context" nodes={['已保存的编辑会话','读取尺寸、版本与图层','构成本轮规划上下文']} caption="看会话标题、左下角尺寸与修订，以及右侧图层面板。此图为修订2，展示下一轮规划读取的已保存状态。" note="上下文读取逻辑示意；界面截图展示可核对的会话字段。" onOpen={openMedia}/></div></li>
             <li><span className="journey-number">02</span><div><h3>把要求转成工具步骤</h3><p>模型提出工具与参数；LangGraph 依次经过规划和校验。服务端再检查工具是否注册、参数格式、依赖关系和素材归属。当前最多规划 8 步，需要局部编辑时还要核对选区。</p><StepIllustration media="picture-parameters" nodes={['接收修改要求','模型提出工具与参数','校验参数及步骤依赖']} caption="展开实际计划的完整参数：operation 为 flip_horizontal，depends_on 为空。截图来自执行后保存的记录。" note="本例工具为 transform_canvas，参数检查通过后才进入可确认的计划。" onOpen={openMedia}/></div></li>
             <li><span className="journey-number">03</span><div><h3>由人确认要执行什么</h3><p>页面展示实际步骤、参数和依赖，核对完整后再确认。参数校验通过，也需要检查模型是否漏掉要求；不合适时可以取消并重新描述。确认前不修改画布。</p><StepIllustration media="picture-plan" nodes={['待确认：0 / 1 步','核对工具、参数与目标','确认执行，或取消计划']} caption="看右侧“待你确认”和确认按钮：计划为0/1步，左下角画布仍是修订1。" note="此演示明确指定了翻转工具与参数；确认前保留原画布。" onOpen={openMedia}/></div></li>
-            <li><span className="journey-number">04</span><div><h3>按顺序推进，记录每一步</h3><p>翻转、裁剪和调色等本地工具直接保存编辑；生图、整图编辑等图片任务进入队列，由 Worker 处理并返回状态。每次推进核对预期版本，画布变化后停止剩余步骤。</p><StepIllustration media="picture-result" nodes={['核对预期画布版本','执行本地水平翻转','完成1 / 1步，保存修订2']} caption="与上一张同一次运行：海报左右翻转，右侧步骤已完成，左下角修订更新为2。" note="图片任务另走“队列 → Worker → 候选”分支；本张截图只展示本地翻转完成。" onOpen={openMedia}/></div></li>
+            <li><span className="journey-number">04</span><div><h3>按顺序推进，记录每一步</h3><p>翻转、裁剪和调色等本地工具直接保存编辑；生图、整图编辑等图片任务进入队列，由 Worker 处理并返回状态。每次推进核对预期版本，画布变化后停止剩余步骤。</p><StepIllustration media="picture-result" nodes={['核对预期画布版本','执行本地水平翻转','完成1 / 1步，保存修订2']} caption="同一次运行：步骤从 0/1 变为 1/1，画布修订从 1 更新为 2。" note="图片任务另走“队列 → Worker → 候选”分支；此处只展示本地翻转完成。" onOpen={openMedia}/></div></li>
             <li><span className="journey-number">05</span><div><h3>检查结果，再决定保留</h3><p>本地修改进入编辑历史，可以撤销。图片任务完成后把结果加入候选区，用户再决定是否采用。最终按已保存的画布合成导出 PNG、JPG，或多尺寸 ZIP。</p><StepIllustration media="picture-export" nodes={['检查并保存当前画布','选择尺寸与文件格式','合成可见图层并下载']} caption="打开“导出成品”：本次面板选中原尺寸1200×800和PNG，下载入口与导出范围可直接核对。" note="此图展示导出设置；未采用的候选、选区标记和视口缩放不进入成品。" onOpen={openMedia}/></div></li>
-          </ol>
+          </Journey>
           <details className="agent-details" onToggle={()=>window.ScrollTrigger?.refresh()}><summary>画布变了、执行中断了，会怎样？</summary><div className="agent-detail-grid"><section><h3>版本变化</h3><p>规划和执行绑定画布版本。中途手动修改后，旧计划停止推进，避免用旧上下文继续编辑。</p></section><section><h3>任务中断</h3><p>已提交的图片任务保留编号。符合恢复条件时读取原结果或查询原任务；本地失败步骤回滚后，可明确选择重试该步。</p></section><section><h3>取消与撤销</h3><p>取消会停止后续步骤，已完成的编辑仍保留；已提交的图片任务可能继续。需要恢复画布时使用撤销。</p></section></div></details>
         </section>
         <div className="release-row reveal-copy"><div><h3>下载本机版本</h3><p id="picture-install-note">Windows x64 · 需 Docker Desktop</p></div><ExternalLink className="button primary" href="https://github.com/nigu666/ai-picture-editor/releases/latest">下载体验</ExternalLink><ExternalLink className="text-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0">版本说明 · v0.1.0</ExternalLink></div>
@@ -210,6 +252,29 @@
         return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);};
       },[]);
       return <><div className="reading-progress" ref={bar} aria-hidden="true"/><a className={"back-top"+(showTop?" is-visible":"")} href="#profile" aria-label="返回顶部" title="返回顶部" tabIndex={showTop?0:-1}><Icon name="up"/></a></>;
+    }
+
+    function SectionNav({project}){
+      const items=[{id:'case-study',label:'项目介绍'},...(project==='picture'?[{id:'agent-process',label:'运行图解'}]:[]),{id:'skills',label:'技术与实践'},{id:'contact',label:'联系'}];
+      const [active,setActive]=React.useState('case-study');
+      React.useEffect(()=>{
+        let frame=0;
+        function update(){
+          frame=0;let current=items[0].id;
+          for(const item of items){const node=document.getElementById(item.id);if(node&&node.getBoundingClientRect().top<=150)current=item.id;}
+          if(scrollY+innerHeight>=document.documentElement.scrollHeight-8){
+            const anchored=items.find(item=>'#'+item.id===location.hash);
+            const top=anchored?document.getElementById(anchored.id)?.getBoundingClientRect().top:-1;
+            current=anchored&&top>=0&&top<innerHeight?anchored.id:'contact';
+          }
+          setActive(current);
+        }
+        function schedule(){if(!frame)frame=requestAnimationFrame(update);}
+        const resize=new ResizeObserver(schedule);resize.observe(document.body);
+        window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);window.addEventListener('hashchange',schedule);update();
+        return()=>{cancelAnimationFrame(frame);resize.disconnect();window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);window.removeEventListener('hashchange',schedule);};
+      },[project]);
+      return <nav className="section-nav" aria-label="页面章节"><span className="section-project">{PROJECTS.find(item=>item.id===project).name}</span><div>{items.map(item=><a key={item.id} href={'#'+item.id} aria-current={active===item.id?'location':undefined}>{item.label}</a>)}</div></nav>;
     }
 
     function App(){
@@ -322,6 +387,7 @@
                 </div>
               </section>
 
+              <SectionNav project={project.id}/>
               <article className="case-study" id="case-study" aria-label={project.name+"项目详情"}><div id={project.section} key={project.id}>
                 <div className="case-top"><p>{project.name}</p><ExternalLink className="text-link" href={project.url}>{project.linkLabel}</ExternalLink></div>
                 {project.id==="picture"&&<PictureCase openMedia={openMedia}/>}
