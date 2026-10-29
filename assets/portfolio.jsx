@@ -14,6 +14,9 @@
       ,{id:"picture-workbench",group:"picture",title:"AI 修图智能体",src:"assets/ai-picture-editor/workbench.png",alt:"AI 修图智能体本机运行画面，蓝调海报位于画布中，周围是编辑工具、图层与 AI 指令面板",caption:"本机运行中的悬浮画布、图层、选区工具与导出入口。"}
     ];
     const FILTERS=[{id:"all",label:"全部证据"},{id:"workflow",label:"工作流"},{id:"rag",label:"知识检索"},{id:"api",label:"业务 API"}];
+    MEDIA.push(
+      {id:"picture-result",group:"picture",title:"执行完成与画布结果",src:"assets/ai-picture-editor/process-result.png",alt:"水平翻转后的真实画布与已完成计划记录",caption:"确认后执行本地翻转，结果保存到会话。此例验证本地编辑链路，不涉及AI生图或云端图片处理。"}
+    );
     const ENGINEERING_MEDIA=MEDIA.slice(0,6);
     const mediaById=id=>MEDIA.find(item=>item.id===id);
 
@@ -118,6 +121,18 @@
           <li className="reveal-step"><span className="step-index" aria-hidden="true">02</span><div><h3>规划与执行</h3><p>LangGraph 组织规划与校验，Pydantic 约束工具参数。确认计划后，由 Worker 处理任务并返回进度。</p></div></li>
           <li className="reveal-step"><span className="step-index" aria-hidden="true">03</span><div><h3>本机交付</h3><p>连接接口、数据库、队列与图片存储，通过 Docker Compose 提供中文安装入口。</p></div></li>
         </ol>
+        <section className="agent-story" aria-labelledby="agent-story-title">
+          <header className="case-head reveal-title"><h2 id="agent-story-title"><span className="title-phrase">一句要求，</span><span className="title-phrase">怎样变成一次编辑？</span></h2><p className="story-lead">以“将当前画布水平翻转”为例，沿着一次真实操作看输入、规划、确认和结果。</p></header>
+          <ol className="agent-journey">
+            <li><span className="journey-number">01</span><div><h3>读取正在编辑的画布</h3><p>先确认会话、画布尺寸和当前版本，收集候选素材、图层及已有选区。启用视觉分析时，把已保存图层合成预览交给模型，作为本轮修改的上下文。</p></div><span className="journey-output">会话与版本</span></li>
+            <li><span className="journey-number">02</span><div><h3>把要求转成工具步骤</h3><p>模型提出工具与参数；LangGraph 依次经过规划和校验。服务端再检查工具是否注册、参数格式、依赖关系和素材归属。当前最多规划 8 步，需要局部编辑时还要核对选区。</p></div><span className="journey-output">可核对的计划</span></li>
+            <li><span className="journey-number">03</span><div><h3>由人确认要执行什么</h3><p>页面展示实际步骤、参数和依赖，核对完整后再确认。参数校验通过，也需要检查模型是否漏掉要求；不合适时可以取消并重新描述。确认前不修改画布。</p></div><span className="journey-output">确认或取消</span></li>
+            <li><span className="journey-number">04</span><div><h3>按顺序推进，记录每一步</h3><p>翻转、裁剪和调色等本地工具直接保存编辑；生图、整图编辑等图片任务进入队列，由 Worker 处理并返回状态。每次推进核对预期版本，画布变化后停止剩余步骤。</p></div><span className="journey-output">步骤与任务状态</span></li>
+            <li><span className="journey-number">05</span><div><h3>检查结果，再决定保留</h3><p>本地修改进入编辑历史，可以撤销。图片任务完成后把结果加入候选区，用户再决定是否采用。最终按已保存的画布合成导出 PNG、JPG，或多尺寸 ZIP。</p></div><span className="journey-output">可继续编辑的结果</span></li>
+          </ol>
+          <div className="process-evidence"><figure><MediaButton id="picture-result" onOpen={openMedia}/><figcaption><h3>执行后：查看画布与记录</h3><p>本地水平翻转已完成，页面显示结果及保存后的状态。</p></figcaption></figure></div>
+          <details className="agent-details" onToggle={()=>window.ScrollTrigger?.refresh()}><summary>画布变了、执行中断了，会怎样？</summary><div className="agent-detail-grid"><section><h3>版本变化</h3><p>规划和执行绑定画布版本。中途手动修改后，旧计划停止推进，避免用旧上下文继续编辑。</p></section><section><h3>任务中断</h3><p>已提交的图片任务保留编号。符合恢复条件时读取原结果或查询原任务；本地失败步骤回滚后，可明确选择重试该步。</p></section><section><h3>取消与撤销</h3><p>取消会停止后续步骤，已完成的编辑仍保留；已提交的图片任务可能继续。需要恢复画布时使用撤销。</p></section></div></details>
+        </section>
         <div className="release-row reveal-copy"><div><h3>下载本机版本</h3><p id="picture-install-note">Windows x64 · 需 Docker Desktop</p></div><ExternalLink className="button primary" href="https://github.com/nigu666/ai-picture-editor/releases/latest">下载体验</ExternalLink><ExternalLink className="text-link" href="https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0">版本说明 · v0.1.0</ExternalLink></div>
         <details className="project-notes" onToggle={()=>window.ScrollTrigger?.refresh()}><summary>安装与许可</summary><div><p>当前提供本机使用版本。云端 AI 需自行配置阿里云百炼北京地域密钥、网络和模型权限，调用可能产生费用。静态作品集不提供在线修图服务，也不保存模型密钥。</p><p>学习参考编程导航 AI 修图智能体教程；本项目自行实现部分采用 MIT 许可，第三方框架、服务与模型保留各自授权。</p></div></details>
       </>;
@@ -130,6 +145,7 @@
           <section className="reveal-copy"><h3>我的工作</h3><p>整理养殖资料，配置 RAG 检索、提示词与工作流；提取查询参数，映射设备 ID，处理已有业务接口的返回与异常分支。</p></section>
           <section className="reveal-copy"><h3>业务流程</h3><p>知识问题进入检索回答，设备问题进入工具调用。匹配到多个设备时，先追问编号或池体，再继续查询。</p></section>
         </div>
+        <ol className="dify-journey" aria-label="水产助手运行流程"><li><span>01</span><h3>先判断问题</h3><p>意图分类决定走知识问答，还是设备与水质等业务查询分支。</p></li><li><span>02</span><h3>补齐查询条件</h3><p>提取设备、池体等参数，映射已有业务 ID；匹配不明确时先追问。</p></li><li><span>03</span><h3>检索或调用接口</h3><p>知识问题检索资料并重排；业务问题调用已有 API，解析 JSON 和异常返回。</p></li><li><span>04</span><h3>组织有依据的回答</h3><p>知识回答保留引用；查不到设备或数据缺失时明确反馈，方便继续询问。</p></li></ol>
         <div className="evidence-tools"><div className="filters" role="group" aria-label="筛选技术证据">{FILTERS.map(item=><button className="filter" type="button" key={item.id} aria-pressed={filter===item.id} onClick={()=>setFilter(item.id)}>{item.label}</button>)}</div><span className="evidence-count" aria-live="polite">{visibleMedia.length} 项证据</span></div>
         <div className="evidence-grid" key={filter}>{visibleMedia.map(item=><article className="evidence-item" key={item.id}><MediaButton id={item.id} onOpen={openMedia}/><h3>{item.title}</h3><p>{item.caption}</p></article>)}</div>
         <section className="mobile-section">
