@@ -24,8 +24,10 @@
 
     function Lightbox({items,index,trigger,onClose,onChange}){
       const dialogRef=React.useRef(null),closeRef=React.useRef(null),closeTimer=React.useRef(null);
-      const [closing,setClosing]=React.useState(false);
+      const [closing,setClosing]=React.useState(false),[zoomed,setZoomed]=React.useState(false);
       const item=items[index];
+      const mediaRef=React.useRef(null);
+      React.useEffect(()=>{setZoomed(false);mediaRef.current?.scrollTo(0,0);},[item.id]);
       React.useEffect(()=>{
         const dialog=dialogRef.current,oldOverflow=document.body.style.overflow;
         document.body.style.overflow="hidden";
@@ -46,10 +48,11 @@
       }
       function change(step){if(!closing&&items.length>1)onChange((index+step+items.length)%items.length);}
       function onKeyDown(event){
+        if(zoomed&&event.target===mediaRef.current&&['ArrowLeft','ArrowRight'].includes(event.key))return;
         if(event.key==="ArrowLeft"){event.preventDefault();change(-1);return;}
         if(event.key==="ArrowRight"){event.preventDefault();change(1);return;}
         if(event.key!=="Tab")return;
-        const focusable=Array.from(dialogRef.current.querySelectorAll("button:not([disabled]),a[href]")).filter(node=>node.getClientRects().length>0);
+        const focusable=Array.from(dialogRef.current.querySelectorAll('button:not([disabled]),a[href],[tabindex="0"]')).filter(node=>node.getClientRects().length>0);
         const first=focusable[0],last=focusable[focusable.length-1];
         if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
         else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
@@ -61,9 +64,10 @@
       }
       return <dialog id="lightbox-dialog" ref={dialogRef} className={"viewer"+(closing?" is-closing":"")} aria-modal="true" aria-labelledby="lightbox-title" aria-describedby="lightbox-caption" onCancel={event=>{event.preventDefault();requestClose();}} onClose={onClose} onKeyDown={onKeyDown} onClick={onBackdropClick}>
         <header className="viewer-head"><h2 id="lightbox-title">{item.title}</h2><button type="button" className="viewer-close" ref={closeRef} onClick={requestClose} aria-label="关闭图片查看器">×</button></header>
-        <div className="viewer-media"><img key={item.id} src={item.src} alt={item.alt}/></div>
+        <div ref={mediaRef} className={"viewer-media"+(zoomed?" is-zoomed":"")} tabIndex={zoomed?0:undefined} role={zoomed?"region":undefined} aria-label={zoomed?"图片细节，可滚动查看":undefined} onDoubleClick={()=>setZoomed(value=>!value)}><img key={item.id} src={item.src} alt={item.alt}/></div>
         <p className="viewer-caption" id="lightbox-caption">{item.caption}</p>
         <div className={"viewer-controls"+(items.length===1?" single":"")}>
+          <button type="button" className="button viewer-detail" aria-pressed={zoomed} onClick={()=>setZoomed(value=>!value)}>{zoomed?"适应窗口":"查看细节"}<Icon name="zoom"/></button>
           {items.length>1&&<><div className="viewer-step"><button type="button" className="button" onClick={()=>change(-1)} aria-label="查看上一张图片">← 上一张</button><button type="button" className="button" onClick={()=>change(1)} aria-label="查看下一张图片">下一张 →</button></div><output aria-live="polite" aria-label="当前图片编号">{index+1} / {items.length}</output></>}
           <a className="viewer-original" href={item.src} target="_blank" rel="noopener noreferrer">查看原图 ↗</a>
         </div>
@@ -86,6 +90,7 @@
         arrow:<path d="M6 18 18 6M6 6h12v12"/>,
         down:<path d="M12 4v16m-6-6 6 6 6-6"/>,
         right:<path d="M4 12h16m-6-6 6 6-6 6"/>,
+        left:<path d="M20 12H4m6-6-6 6 6 6"/>,
         up:<path d="M12 20V4m-6 6 6-6 6 6"/>,
         mail:<><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></>,
         image:<><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5"/><path d="m4 17 5-5 4 4 3-3 5 5"/></>,
@@ -103,7 +108,7 @@
 
     function PictureCase({openMedia}){
       return <>
-        <header className="case-head reveal-title"><h2>从编辑，到规划与交付。</h2></header>
+        <header className="case-head reveal-title"><h2><span className="title-phrase">从编辑，</span><span className="title-phrase">到规划与交付。</span></h2></header>
         <div className="case-columns">
           <section className="reveal-copy"><h3>我主要做了什么</h3><p>我参与需求取舍、模型选择、界面反馈与功能验收，通过 AI 协作推进开发。</p><h3 className="purpose-heading">要解决什么问题</h3><p>把一句修图要求转成可确认的编辑步骤，保留手动调整、预览和导出的完整入口。</p></section>
           <section className="case-focus reveal-copy"><h3>画布、图层与 AI 指令</h3><MediaButton id="picture-workbench" onOpen={openMedia}/></section>
@@ -120,7 +125,7 @@
 
     function DifyCase({filter,setFilter,visibleMedia,openMedia}){
       return <>
-        <header className="case-head reveal-title"><h2>知识问答和业务查询，<br className="mobile-break"/>各走对应的流程。</h2></header>
+        <header className="case-head reveal-title"><h2><span className="title-phrase">知识问答和业务查询，</span><br className="mobile-break"/><span className="title-phrase">各走对应的流程。</span></h2></header>
         <div className="case-columns">
           <section className="reveal-copy"><h3>我的工作</h3><p>整理养殖资料，配置 RAG 检索、提示词与工作流；提取查询参数，映射设备 ID，处理已有业务接口的返回与异常分支。</p></section>
           <section className="reveal-copy"><h3>业务流程</h3><p>知识问题进入检索回答，设备问题进入工具调用。匹配到多个设备时，先追问编号或池体，再继续查询。</p></section>
@@ -136,7 +141,7 @@
 
     function WebCase(){
       return <>
-        <header className="case-head reveal-title"><h2>把业务关系，整理成能操作的页面。</h2></header>
+        <header className="case-head reveal-title"><h2><span className="title-phrase">把业务关系，</span><span className="title-phrase">整理成</span><span className="title-phrase">能操作的页面。</span></h2></header>
         <div className="case-columns">
           <section className="reveal-copy"><h3>负责内容</h3><ul className="scope-list"><li>参与需求沟通，梳理业务字段与页面关系</li><li>综合看板及设备、生产模块的交互原型</li><li>筛选、分页、抽屉、表单与页面状态联动</li></ul></section>
           <section className="reveal-copy"><h3>联动问题怎么处理</h3><p>针对维修工单与经验库记录不一致的问题，统一业务 ID，补充状态判断和提交校验，让维修记录、经验提交与审核结果能够对应。</p></section>
@@ -148,7 +153,7 @@
 
     function TwinCase({openMedia}){
       return <>
-        <header className="case-head reveal-title"><h2>让监控信息更容易找到。</h2></header>
+        <header className="case-head reveal-title"><h2><span className="title-phrase">让监控信息</span><span className="title-phrase">更容易找到。</span></h2></header>
         <div className="case-columns">
           <section className="reveal-copy"><h3>负责内容</h3><p>界面布局、图表交互、视频墙与场景切换，组织水质、设备、告警和监控信息。</p></section>
           <section className="reveal-copy"><h3>页面与交互</h3><p>围绕数据驾驶舱、视频墙和数字孪生场景，完成信息分组、图表交互与场景切换等原型展示。</p></section>
@@ -166,10 +171,29 @@
       return index<0?Math.max(0,saved):index;
     }
 
+    function ReadingTools(){
+      const bar=React.useRef(null),[showTop,setShowTop]=React.useState(false);
+      React.useEffect(()=>{
+        let frame=0;
+        function update(){
+          frame=0;
+          const distance=document.documentElement.scrollHeight-innerHeight;
+          bar.current?.style.setProperty('--progress',distance>0?Math.min(1,Math.max(0,scrollY/distance)):0);
+          setShowTop(scrollY>innerHeight*.8);
+        }
+        function schedule(){if(!frame)frame=requestAnimationFrame(update);}
+        const observer=new ResizeObserver(schedule);observer.observe(document.body);
+        window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);update();
+        return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);};
+      },[]);
+      return <><div className="reading-progress" ref={bar} aria-hidden="true"/><a className={"back-top"+(showTop?" is-visible":"")} href="#profile" aria-label="返回顶部" title="返回顶部" tabIndex={showTop?0:-1}><Icon name="up"/></a></>;
+    }
+
     function App(){
       const [selected,setSelected]=React.useState(selectedFromHash),[direction,setDirection]=React.useState(1);
       const [filter,setFilter]=React.useState("all"),[lightbox,setLightbox]=React.useState(null);
       const scope=React.useRef(null),initial=React.useRef(true);
+      const touchStart=React.useRef(null),suppressClickUntil=React.useRef(0);
       const project=PROJECTS[selected],cover=mediaById(project.media);
       const visibleMedia=filter==="all"?ENGINEERING_MEDIA:ENGINEERING_MEDIA.filter(item=>item.group===filter);
 
@@ -180,6 +204,21 @@
         url.hash="work="+PROJECTS[index].id;
         history.replaceState(null,"",url);
         if(focus)document.getElementById("project-tab-"+PROJECTS[index].id)?.focus({preventScroll:true});
+      }
+      function stepProject(step){
+        const next=(selected+step+PROJECTS.length)%PROJECTS.length;
+        selectProject(next);setDirection(step);
+      }
+      function startSwipe(event){
+        suppressClickUntil.current=0;
+        const touch=event.touches.length===1?event.touches[0]:null;
+        touchStart.current=touch&&!event.target.closest('.stage-step,.stage-zoom')?{x:touch.clientX,y:touch.clientY}:null;
+      }
+      function finishSwipe(event){
+        const start=touchStart.current;touchStart.current=null;
+        if(!start||!event.changedTouches.length)return;
+        const touch=event.changedTouches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
+        if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){suppressClickUntil.current=Date.now()+500;stepProject(dx<0?1:-1);}
       }
       function onProjectKey(event){
         let next;
@@ -229,9 +268,12 @@
         return()=>mm.revert();
       },[selected]);
       React.useEffect(()=>{const frame=requestAnimationFrame(()=>window.ScrollTrigger?.refresh());return()=>cancelAnimationFrame(frame);},[filter]);
+      React.useEffect(()=>{let active=true;document.fonts.ready.then(()=>{if(active)window.ScrollTrigger?.refresh();});return()=>{active=false;};},[]);
 
       return <>
-        <div id="page-shell" ref={scope}>
+        <div id="page-shell" ref={scope} data-project={project.id}>
+          <div className="page-atmosphere" aria-hidden="true">{PROJECTS.map((item,index)=><span key={item.id} className={"ambience ambience-"+item.id+(index===selected?" is-current":"")}/>)}</div>
+          <ReadingTools/>
           <a className="skip-link" href="#catalog">跳到作品</a>
           <div className="wrap">
             <header className="masthead" id="profile">
@@ -242,9 +284,12 @@
             <main>
               <section className="showcase" id="catalog" aria-label="作品放映厅">
                 <div id="showcase-panel" role="tabpanel" aria-labelledby={"project-tab-"+project.id} tabIndex="0">
-                  <div className={"stage stage-"+project.id}>
-                    <button type="button" className="stage-screen" aria-label={"放大查看"+cover.title} aria-haspopup="dialog" onClick={event=>openMedia(project.media,event.currentTarget)}><img className="stage-artwork" style={{"--enter-x":direction*16+"px"}} key={project.id} src={cover.src} alt={cover.alt} fetchPriority="high"/></button>
+                  <div className={"stage stage-"+project.id} onTouchStart={startSwipe} onTouchEnd={finishSwipe} onTouchCancel={()=>{touchStart.current=null;}} onTouchMove={event=>{if(event.touches.length!==1)touchStart.current=null;}}>
+                    <button type="button" className="stage-screen" aria-label={"放大查看"+cover.title} aria-haspopup="dialog" onClick={event=>{if(Date.now()<suppressClickUntil.current){event.preventDefault();return;}openMedia(project.media,event.currentTarget);}}><img className="stage-artwork" style={{"--enter-x":direction*28+"px"}} key={project.id} src={cover.src} alt={cover.alt} fetchPriority="high" draggable="false"/></button>
+                    <button type="button" className="stage-step stage-previous" aria-label="上一个作品" onClick={()=>stepProject(-1)}><Icon name="left"/></button>
+                    <button type="button" className="stage-step stage-next" aria-label="下一个作品" onClick={()=>stepProject(1)}><Icon name="right"/></button>
                     <button type="button" className="stage-zoom" onClick={event=>openMedia(project.media,event.currentTarget)} aria-label={"放大"+project.name+"画面"}><Icon name="zoom"/><span>放大画面</span></button>
+                    <output className="stage-position" aria-label="当前作品" aria-live="polite"><span>{String(selected+1).padStart(2,'0')}</span><span aria-hidden="true"> / </span><span>{String(PROJECTS.length).padStart(2,'0')}</span><span className="sr-only"> · {project.name}</span></output>
                   </div>
                   <div className="project-caption" key={project.id}><div><h2 id="current-project">{project.name}</h2><p className="project-kind">{project.kind}</p></div><div className="project-description"><p>{project.id==="picture"?<><span className="keep">自然语言规划修图，</span><span className="keep">画布编辑、预览与导出。</span></>:project.description}</p></div><a className="button primary project-cta" href="#case-study">查看项目<Icon name="down"/></a></div>
                 </div>
