@@ -31,10 +31,16 @@
 
     function Lightbox({items,index,trigger,onClose,onChange}){
       const dialogRef=React.useRef(null),closeRef=React.useRef(null),closeTimer=React.useRef(null);
-      const [closing,setClosing]=React.useState(false),[zoomed,setZoomed]=React.useState(false);
+      const [closing,setClosing]=React.useState(false),[zoomed,setZoomed]=React.useState(false),[showIndex,setShowIndex]=React.useState(false);
       const item=items[index];
       const mediaRef=React.useRef(null);
       React.useEffect(()=>{setZoomed(false);mediaRef.current?.scrollTo(0,0);},[item.id]);
+      React.useEffect(()=>{
+        const strip=dialogRef.current?.querySelector('.viewer-thumbnails'),selected=strip?.querySelector('[aria-current=true]');
+        if(!strip||!selected)return;
+        function center(){if(strip.clientWidth)strip.scrollLeft+=selected.getBoundingClientRect().left-strip.getBoundingClientRect().left-(strip.clientWidth-selected.offsetWidth)/2;}
+        const observer=new ResizeObserver(center);observer.observe(strip);center();return()=>observer.disconnect();
+      },[item.id,showIndex]);
       React.useEffect(()=>{
         const dialog=dialogRef.current,oldOverflow=document.body.style.overflow;
         document.body.style.overflow="hidden";
@@ -69,10 +75,11 @@
         const rect=event.currentTarget.getBoundingClientRect();
         if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)requestClose();
       }
-      return <dialog id="lightbox-dialog" ref={dialogRef} className={"viewer"+(closing?" is-closing":"")} aria-modal="true" aria-labelledby="lightbox-title" aria-describedby="lightbox-caption" onCancel={event=>{event.preventDefault();requestClose();}} onClose={onClose} onKeyDown={onKeyDown} onClick={onBackdropClick}>
+      return <dialog id="lightbox-dialog" ref={dialogRef} className={"viewer"+(closing?" is-closing":"")+(showIndex?" index-expanded":"")} aria-modal="true" aria-labelledby="lightbox-title" aria-describedby="lightbox-caption" onCancel={event=>{event.preventDefault();requestClose();}} onClose={onClose} onKeyDown={onKeyDown} onClick={onBackdropClick}>
         <header className="viewer-head"><h2 id="lightbox-title">{item.title}</h2><button type="button" className="viewer-close" ref={closeRef} onClick={requestClose} aria-label="关闭图片查看器">×</button></header>
         <div ref={mediaRef} className={"viewer-media"+(zoomed?" is-zoomed":"")} tabIndex={zoomed?0:undefined} role={zoomed?"region":undefined} aria-label={zoomed?"图片细节，可滚动查看":undefined} onDoubleClick={()=>setZoomed(value=>!value)}><img key={item.id} src={item.src} alt={item.alt}/></div>
         <p className="viewer-caption" id="lightbox-caption">{item.caption}</p>
+        {items.length>1&&<><button type="button" className="viewer-index-toggle" aria-expanded={showIndex} aria-controls="viewer-thumbnails" onClick={()=>setShowIndex(value=>!value)}>{showIndex?'收起图片目录':'图片目录 · '+items.length+' 张'}<Icon name={showIndex?'up':'down'}/></button><nav id="viewer-thumbnails" className={'viewer-thumbnails'+(showIndex?' is-open':'')} aria-label="图片目录">{items.map((media,mediaIndex)=><button type="button" key={media.id} aria-current={index===mediaIndex?'true':undefined} aria-label={'查看第'+(mediaIndex+1)+'张：'+media.title} onClick={()=>{if(!closing)onChange(mediaIndex);}}><img src={media.src} alt="" loading="lazy"/><span>{media.title}</span></button>)}</nav></>}
         <div className={"viewer-controls"+(items.length===1?" single":"")}>
           <button type="button" className="button viewer-detail" aria-pressed={zoomed} onClick={()=>setZoomed(value=>!value)}>{zoomed?"适应窗口":"查看细节"}<Icon name="zoom"/></button>
           {items.length>1&&<><div className="viewer-step"><button type="button" className="button" onClick={()=>change(-1)} aria-label="查看上一张图片">← 上一张</button><button type="button" className="button" onClick={()=>change(1)} aria-label="查看下一张图片">下一张 →</button></div><output aria-live="polite" aria-label="当前图片编号">{index+1} / {items.length}</output></>}
@@ -187,6 +194,41 @@
       </>;
     }
 
+    const DIFY_ROUTES=[
+      {id:'knowledge',label:'知识问答',media:'qa',title:'什么是溶解氧？',nodes:[
+        {title:'识别知识问题',text:'意图分类把这类概念问题送入知识问答分支。此时不需要查设备状态。'},
+        {title:'检索领域资料',text:'从已整理的养殖资料中检索相关内容，结合混合检索与重排选择上下文。'},
+        {title:'回答并保留引用',text:'根据检索上下文组织解释。右侧运行记录保留知识库引用，可以核对回答依据。'}]},
+      {id:'device',label:'设备查询',media:'api',title:'查看设备当前运行状态',nodes:[
+        {title:'提取查询条件',text:'识别设备查询意图，提取设备名称或编号，进入设备信息分支。'},
+        {title:'匹配后读取设备',text:'将输入映射为已有业务设备 ID，再调用业务接口。匹配不明确时先补齐条件。'},
+        {title:'解析返回信息',text:'解析已有接口返回。运行记录展示设备 H_P3_PU1 的状态、电流与运行时间，缺少的在线状态也明确说明。'}]},
+      {id:'missing',label:'未找到设备',media:'not-found',title:'查询 ABC 设备当前状态',nodes:[
+        {title:'进入设备分支',text:'先识别查询意图，读取并检索设备 ID，不直接编造设备状态。'},
+        {title:'检查匹配结果',text:'设备 ID 清洗后进入条件分支。当前查询未找到对应设备，因此不继续读取具体设备信息。'},
+        {title:'返回未找到',text:'真实记录最终显示“未找到对应设备”。异常分支到此结束，用户可以核对名称或编号后再查询。'}]},
+      {id:'water',label:'水质分析',media:'water',title:'结合传感器返回分析水质',nodes:[
+        {title:'读取业务数据',text:'通过已有业务接口读取水质相关传感器数据，将可用指标交给分析步骤。'},
+        {title:'区分可用与缺失',text:'这份运行记录包含液位、pH 等数据；温度没有返回，标记为暂无数据。'},
+        {title:'有依据地分析',text:'基于已有指标组织分析，对缺失的温度明确表示无法评估，并提示检查数据来源。'}]}
+    ];
+
+    function DifyExplorer({openMedia}){
+      const [routeIndex,setRouteIndex]=React.useState(0),[nodeIndex,setNodeIndex]=React.useState(0);
+      const route=DIFY_ROUTES[routeIndex],node=route.nodes[nodeIndex];
+      React.useEffect(()=>{const frame=requestAnimationFrame(()=>window.ScrollTrigger?.refresh());return()=>cancelAnimationFrame(frame);},[routeIndex,nodeIndex]);
+      function selectNode(index,focus=false){setNodeIndex(index);if(focus)document.getElementById('route-node-'+index)?.focus({preventScroll:true});}
+      function onNodeKey(event){const next={ArrowLeft:Math.max(0,nodeIndex-1),ArrowUp:Math.max(0,nodeIndex-1),ArrowRight:Math.min(2,nodeIndex+1),ArrowDown:Math.min(2,nodeIndex+1),Home:0,End:2}[event.key];if(next!==undefined){event.preventDefault();selectNode(next,true);}}
+      return <section id="dify-process" className="dify-explorer" aria-labelledby="dify-process-title">
+        <header className="case-head"><h2 id="dify-process-title">顺着问题，看处理分支。</h2></header>
+        <div className="route-options" role="group" aria-label="选择问题类型">{DIFY_ROUTES.map((item,index)=><button type="button" key={item.id} aria-pressed={routeIndex===index} onClick={()=>{setRouteIndex(index);setNodeIndex(0);}}><Icon name={item.id==='knowledge'?'workflow':item.id==='water'?'chart':'layout'}/>{item.label}</button>)}</div>
+        <div className="route-layout" data-route={route.id}>
+          <div className="route-story"><h3>{route.title}</h3><div className="route-nodes" role="tablist" aria-label="处理节点" aria-orientation="vertical" onKeyDown={onNodeKey}>{route.nodes.map((item,index)=><React.Fragment key={item.title}>{index>0&&<Icon name="down"/>}<button id={'route-node-'+index} type="button" role="tab" aria-selected={nodeIndex===index} aria-controls="route-explanation" tabIndex={nodeIndex===index?0:-1} onClick={()=>selectNode(index)}><span>{String(index+1).padStart(2,'0')}</span>{item.title}<Icon name="right"/></button></React.Fragment>)}</div><div id="route-explanation" className="route-explanation" role="tabpanel" aria-labelledby={'route-node-'+nodeIndex} tabIndex="0"><p key={route.id+'-'+nodeIndex}>{node.text}</p></div></div>
+          <figure className="route-evidence" key={route.id}><MediaButton id={route.media} onOpen={openMedia}/><figcaption><span>运行记录</span>{mediaById(route.media).title}</figcaption></figure>
+        </div>
+      </section>;
+    }
+
     function DifyCase({filter,setFilter,visibleMedia,openMedia}){
       return <>
         <header className="case-head reveal-title"><h2><span className="title-phrase">知识问答和业务查询，</span><br className="mobile-break"/><span className="title-phrase">各走对应的流程。</span></h2></header>
@@ -194,7 +236,7 @@
           <section className="reveal-copy"><h3>我的工作</h3><p>整理养殖资料，配置 RAG 检索、提示词与工作流；提取查询参数，映射设备 ID，处理已有业务接口的返回与异常分支。</p></section>
           <section className="reveal-copy"><h3>业务流程</h3><p>知识问题进入检索回答，设备问题进入工具调用。匹配到多个设备时，先追问编号或池体，再继续查询。</p></section>
         </div>
-        <ol className="dify-journey" aria-label="水产助手运行流程"><li><span>01</span><h3>先判断问题</h3><p>意图分类决定走知识问答，还是设备与水质等业务查询分支。</p></li><li><span>02</span><h3>补齐查询条件</h3><p>提取设备、池体等参数，映射已有业务 ID；匹配不明确时先追问。</p></li><li><span>03</span><h3>检索或调用接口</h3><p>知识问题检索资料并重排；业务问题调用已有 API，解析 JSON 和异常返回。</p></li><li><span>04</span><h3>组织有依据的回答</h3><p>知识回答保留引用；查不到设备或数据缺失时明确反馈，方便继续询问。</p></li></ol>
+        <DifyExplorer openMedia={openMedia}/>
         <div className="evidence-tools"><div className="filters" role="group" aria-label="筛选技术证据">{FILTERS.map(item=><button className="filter" type="button" key={item.id} aria-pressed={filter===item.id} onClick={()=>setFilter(item.id)}>{item.label}</button>)}</div><span className="evidence-count" aria-live="polite">{visibleMedia.length} 项证据</span></div>
         <div className="evidence-grid" key={filter}>{visibleMedia.map(item=><article className="evidence-item" key={item.id}><MediaButton id={item.id} onOpen={openMedia}/><h3>{item.title}</h3><p>{item.caption}</p></article>)}</div>
         <section className="mobile-section">
@@ -255,7 +297,7 @@
     }
 
     function SectionNav({project}){
-      const items=[{id:'case-study',label:'项目介绍'},...(project==='picture'?[{id:'agent-process',label:'运行图解'}]:[]),{id:'skills',label:'技术与实践'},{id:'contact',label:'联系'}];
+      const items=[{id:'case-study',label:'项目介绍'},...(project==='picture'?[{id:'agent-process',label:'运行图解'}]:project==='dify'?[{id:'dify-process',label:'处理分支'}]:[]),{id:'skills',label:'技术与实践'},{id:'contact',label:'联系'}];
       const [active,setActive]=React.useState('case-study');
       React.useEffect(()=>{
         let frame=0;
