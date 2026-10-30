@@ -4,12 +4,16 @@
 
 **[打开在线作品集 →](https://nigu666.github.io/ai-application-engineer-portfolio/)**
 
+当前作品集版本：**[v2026.10.31](https://github.com/nigu666/ai-application-engineer-portfolio/releases/tag/v2026.10.31)** · [更新记录](CHANGELOG.md)
+
+这个版本集中整理已上线的交互与运行证据：五步修图图解、同次执行前后对比、水产 AI 四类处理分支，以及截图缩略目录。作品集是静态展示网站；修图应用的安装包单独发布，最新仍为 **v0.1.0**。
+
 ## 项目索引
 
 | 项目 | 展示内容 | 入口 |
 | --- | --- | --- |
-| AI 修图智能体 | 悬浮画布、图层与本地编辑、可确认的 AI 计划、异步任务、本机安装交付 | [源码](https://github.com/nigu666/ai-picture-editor) · [v0.1.0 安装包](https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0) |
-| 智慧水产 AI 助手 | Dify Workflow、RAG、已有业务 API 集成、异常分支与移动端对话原型 | [技术证据](https://nigu666.github.io/ai-application-engineer-portfolio/#evidence) |
+| AI 修图智能体 | 图层与本地编辑、可确认的 AI 计划、异步任务；五步运行图解与前后画面对比 | [案例与图解](https://nigu666.github.io/ai-application-engineer-portfolio/?project=picture#picture-editor) · [源码](https://github.com/nigu666/ai-picture-editor) · [v0.1.0 安装包](https://github.com/nigu666/ai-picture-editor/releases/tag/v0.1.0) |
+| 智慧水产 AI 助手 | Dify / RAG、已有业务 API 集成；知识问答、设备查询、未找到设备与水质分析四类处理分支 | [处理分支与证据](https://nigu666.github.io/ai-application-engineer-portfolio/?project=dify#evidence) |
 | 智慧增殖放流站 Web 原型 | 业务字段、状态操作、页面迁移与跨模块异常工单衔接 | [原型作品集](https://nigu666.github.io/zhihui-shuichan-jiaohu-yuanxing/) |
 | 数字孪生养殖监控 | 数据驾驶舱布局、图表、视频墙与场景切换等交互原型 | [页面与职责](https://nigu666.github.io/ai-application-engineer-portfolio/#twin-detail) |
 
