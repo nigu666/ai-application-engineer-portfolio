@@ -297,7 +297,7 @@
     }
 
     function SectionNav({project}){
-      const items=[{id:'case-study',label:'项目介绍'},...(project==='picture'?[{id:'agent-process',label:'运行图解'}]:project==='dify'?[{id:'dify-process',label:'处理分支'}]:[]),{id:'skills',label:'技术与实践'},{id:'contact',label:'联系'}];
+      const items=[{id:'case-study',label:'项目介绍'},...(project==='picture'?[{id:'agent-process',label:'运行图解'}]:project==='dify'?[{id:'dify-process',label:'处理分支'}]:[]),{id:'skills',label:'成果与实现'},{id:'contact',label:'联系'}];
       const [active,setActive]=React.useState('case-study');
       React.useEffect(()=>{
         let frame=0;
@@ -438,10 +438,10 @@
                 {project.id==="twin"&&<TwinCase openMedia={openMedia}/>}
               </div></article>
 
-              <section className="expertise" id="skills" aria-labelledby="skills-title"><header className="reveal-title"><h2 id="skills-title">技术与实践</h2></header><div className="skill-rows">
-                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">01</span><h3>接口与任务</h3></div><div><p>结合修图项目学习 Python、FastAPI 与 Pydantic，梳理请求校验、数据保存和异步任务。</p><button type="button" className="practice-link" onClick={()=>showCase(0)}>看修图项目<Icon name="right"/></button></div></article>
-                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">02</span><h3>检索与工作流</h3></div><div><p>在 Dify 中配置知识检索与业务分支；结合修图项目理解 LangGraph 规划、工具调用和人工确认。</p><button type="button" className="practice-link" onClick={()=>showCase(1)}>看水产 AI 实践<Icon name="right"/></button></div></article>
-                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">03</span><h3>交互与交付</h3></div><div><p>参与交互原型、页面迁移和界面验收，通过 AI 协作推进 React 画布与本机交付，继续学习 JavaScript、Git 和 Docker。</p><button type="button" className="practice-link" onClick={()=>showCase(2)}>看交互原型<Icon name="right"/></button></div></article>
+              <section className="expertise" id="skills" aria-labelledby="skills-title"><header className="reveal-title"><h2 id="skills-title">成果与实现</h2></header><div className="skill-rows">
+                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">01</span><h3>修图工作台</h3></div><div><p>画布与图层编辑、可确认的 AI 计划、异步任务和图片导出，提供 Windows 本机安装包。</p><button type="button" className="practice-link" onClick={()=>showCase(0)}>看修图项目<Icon name="right"/></button></div></article>
+                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">02</span><h3>业务 AI 助手</h3></div><div><p>Dify 工作流连接知识检索与已有业务接口，覆盖知识问答、设备查询、水质分析和异常反馈。</p><button type="button" className="practice-link" onClick={()=>showCase(1)}>看水产 AI 实践<Icon name="right"/></button></div></article>
+                <article className="skill-row reveal-copy"><div className="practice-title"><span aria-hidden="true">03</span><h3>交互与可视化</h3></div><div><p>移动端与 Web 交互原型覆盖设备、生产、报修和监控场景，展示页面状态联动与业务操作流程。</p><button type="button" className="practice-link" onClick={()=>showCase(2)}>看交互原型<Icon name="right"/></button></div></article>
               </div></section>
               <section className="contact" id="contact" aria-labelledby="contact-title"><h2 id="contact-title">聊聊项目，<br/>也聊聊机会。</h2><div className="contact-links"><a className="contact-email" title="打开默认邮件应用" href="mailto:3077602965@qq.com?subject=AI%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%BD%9C%E5%93%81%E9%9B%86%E8%81%94%E7%B3%BB"><Icon name="mail"/>3077602965@qq.com</a><div className="contact-more"><ExternalLink className="contact-other" href="https://github.com/nigu666">GitHub 主页</ExternalLink><ExternalLink className="contact-other" href="../zhihui-shuichan-jiaohu-yuanxing/">更多交互作品</ExternalLink></div></div></section>
             </main>
